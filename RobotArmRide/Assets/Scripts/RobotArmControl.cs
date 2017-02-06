@@ -5,8 +5,9 @@ public class RobotArmControl : MonoBehaviour {
 	private GameObject RobotArm_base;
 	private GameObject RobotArm_main_rotor;
 	private GameObject RobotArm_lower_arm;
-	private GameObject RobotArm_upper_arm;
-	private GameObject RobotArm_wrist_peice;
+	private GameObject RobotArm_upper_arm_back;
+    private GameObject RobotArm_upper_arm_front;
+    private GameObject RobotArm_wrist_peice;
 	private GameObject RobotArm_seat;
 
 	public float RA_x = 0f;
@@ -30,10 +31,10 @@ public class RobotArmControl : MonoBehaviour {
 
 	private bool RA_complete = false;
 
-	private readonly Vector3 segment1 = new Vector3 (0.0f, 0.76f, 0.0f);
-	private readonly Vector3 segment2 = new Vector3 (1.0f, 0.0f, 0.0f);
-	private readonly Vector3 segment3 = new Vector3 (1.0f, 0.0f, 0.0f);
-	private readonly Vector3 segment4 = new Vector3 (0.5f, 0.0f, 0.0f);
+	private readonly Vector3 segment1 = new Vector3 (0.0f, 0.38f, 0.0f); // From base of arm to Kuka-Axis 2
+	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
+	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
+	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
 
 	//private scaleByAcceleration sbaScript;
 
@@ -41,25 +42,28 @@ public class RobotArmControl : MonoBehaviour {
 	void Start () {
 		Transform[] RA_parts = GetComponentsInChildren<Transform> ();
 		for (int i = 0; i < RA_parts.Length; i++) {
-			if (RA_parts [i].name == "base")
+			if (RA_parts[i].name == "base")
 				RobotArm_base = RA_parts [i].gameObject;
-			else if (RA_parts [i].name == "main_rotor")
+			else if (RA_parts[i].name == "main_rotor")
 				RobotArm_main_rotor = RA_parts [i].gameObject;
-			else if (RA_parts [i].name == "lower_arm")
+			else if (RA_parts[i].name == "lower_arm")
 				RobotArm_lower_arm = RA_parts [i].gameObject;
-			else if (RA_parts [i].name == "upper_arm")
-				RobotArm_upper_arm = RA_parts [i].gameObject;
-			else if (RA_parts [i].name == "wrist_piece")
+			else if (RA_parts[i].name == "upper_arm_back")
+                RobotArm_upper_arm_back = RA_parts [i].gameObject;
+            else if (RA_parts[i].name == "upper_arm_front")
+                RobotArm_upper_arm_front = RA_parts[i].gameObject;
+            else if (RA_parts[i].name == "wrist_piece")
 				RobotArm_wrist_peice = RA_parts [i].gameObject;
-			else if (RA_parts [i].name == "seat")
-				RobotArm_seat = RA_parts [i].gameObject;
+			else if (RA_parts[i].name == "seat")
+				RobotArm_seat = RA_parts[i].gameObject;
 			
 		}
 		if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
 		    && RobotArm_lower_arm != null
-		    && RobotArm_upper_arm != null
-		    && RobotArm_wrist_peice != null
+		    && RobotArm_upper_arm_back != null
+            && RobotArm_upper_arm_front != null
+            && RobotArm_wrist_peice != null
 		    && RobotArm_seat != null) {
 
 			RA_complete = true;
@@ -109,9 +113,11 @@ public class RobotArmControl : MonoBehaviour {
 		RobotArm_main_rotor.transform.localRotation = Quaternion.AngleAxis(set_rotor, Vector3.up);
 		RobotArm_lower_arm.transform.localPosition = segment1;
 		RobotArm_lower_arm.transform.localRotation = Quaternion.AngleAxis (set_lower, localForward);
-		RobotArm_upper_arm.transform.localPosition = segment2;
-		RobotArm_upper_arm.transform.localRotation = Quaternion.AngleAxis (set_upper, localForward);
-		RobotArm_wrist_peice.transform.localPosition = segment3;
+        RobotArm_upper_arm_back.transform.localPosition = segment2;
+        RobotArm_upper_arm_back.transform.localRotation = Quaternion.AngleAxis (set_upper, localForward);
+        // RobotArm_upper_arm_front.transform.localPosition = segmentX;
+        // RobotArm_upper_arm_front.transform.localRotation = Quaternion.AngleAxis(set_upperX, localForward);
+        RobotArm_wrist_peice.transform.localPosition = segment3;
 		RobotArm_wrist_peice.transform.localRotation =  Quaternion.AngleAxis (180 - set_wrist, localForward);
 		RobotArm_seat.transform.localPosition = segment4;
 		RobotArm_seat.transform.localRotation =  Quaternion.AngleAxis (180 + set_seat, localRight);
