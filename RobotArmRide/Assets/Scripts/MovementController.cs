@@ -7,11 +7,12 @@ using System.Collections;
 public class MovementController : MonoBehaviour {
 
 	Vector3 initPlayerPos;
+    Quaternion initPlayerRot;
 
-	/// <summary>
-	/// Raw sideways input from the joystick and keyboard
-	/// </summary>
-	public float rawInputHoriz;
+    /// <summary>
+    /// Raw sideways input from the joystick and keyboard
+    /// </summary>
+    public float rawInputHoriz;
 	/// <summary>
 	/// Raw forwards/backwards input from the joystick and keyboard
 	/// </summary>
@@ -31,7 +32,8 @@ public class MovementController : MonoBehaviour {
 	void Start () {
 		pm = GetComponent<PlayerMover> ();
 		initPlayerPos = pm.transform.position;
-	}
+        initPlayerRot = pm.transform.rotation;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -49,5 +51,6 @@ public class MovementController : MonoBehaviour {
 	public void ResetPlayer()
 	{
 		pm.transform.position = initPlayerPos;
-	}
+        pm.transform.rotation = initPlayerRot;
+    }
 }

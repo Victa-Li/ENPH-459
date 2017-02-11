@@ -13,6 +13,9 @@ public class ForceSimulator : MonoBehaviour {
 	/// Acceleration mapping reality factor
 	public float AM_RF;
 
+    /// Simulated - percieved acceleration
+    public float d_acceleration;
+
 	public float pitch;
 	public float roll;
 	public float yaw;
@@ -22,7 +25,7 @@ public class ForceSimulator : MonoBehaviour {
 	void Start () {
 		initialPosition = transform.position;
 		//mc = GameObject.FindGameObjectWithTag ("Player").GetComponent<MovementController>();
-		g = Physics.gravity.magnitude;
+		//g = Physics.gravity.magnitude;
 	}
 	
 	// Update is called once per frame
@@ -30,26 +33,32 @@ public class ForceSimulator : MonoBehaviour {
 		// Get the local accelerations:
 		Vector3 localAccel = mc.transform.InverseTransformDirection(mc.acceleration);
 		// Acceleration Mapping
-		pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
-		roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
+		//pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
+		//roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
 		//yaw = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, transform.localPosition.z);
 
 		AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
-		Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
-		// Impulse simulation
-			
-		// Small
+        //Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
+        // Testing a better rotation method:
+        Vector3 AM_from = Physics.gravity;
+        Vector3 AM_to = Physics.gravity + new Vector3( localAccel.x, 0, localAccel.z);
+        Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
+        // Impulse simulation
+
+        // Small
 
 
-		// Large
+        // Large
 
 
-		// Rotation
+        // Rotation
 
 
-		// Set transform
-		transform.position = initialPosition;
-		transform.rotation = mc.transform.rotation * AM_rotation;
+        // Set transform
+        transform.position = initialPosition;
+        Vector3 temp = mc.transform.rotation.eulerAngles;
+        Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.x, 0, temp.z));
+        transform.rotation = rotation_no_y * AM_rotation;
 
 		testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);
 	}
