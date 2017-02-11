@@ -20,6 +20,8 @@ public class ForceSimulator : MonoBehaviour {
 	public float roll;
 	public float yaw;
 
+    public Vector3 localAccel;
+
 	private Vector3 initialPosition;
 	// Use this for initialization
 	void Start () {
@@ -31,7 +33,7 @@ public class ForceSimulator : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		// Get the local accelerations:
-		Vector3 localAccel = mc.transform.InverseTransformDirection(mc.acceleration);
+		localAccel = mc.transform.InverseTransformDirection(mc.acceleration);
 		// Acceleration Mapping
 		//pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
 		//roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);

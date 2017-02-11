@@ -792,7 +792,7 @@ public class Math3d {
 		positionRegister[positionRegister.Length - 1] = position;
 		posTimeRegister[posTimeRegister.Length - 1] = Time.time;
 
-		positionSamplesTaken++;
+        positionSamplesTaken++;
 
 		//The output acceleration can only be calculated if enough samples are taken.
 		if(positionSamplesTaken >= samples){
@@ -805,7 +805,6 @@ public class Math3d {
 
 				//If deltaTime is 0, the output is invalid.
 				if(deltaTime == 0){
-
 					return false;
 				}
 
@@ -814,8 +813,7 @@ public class Math3d {
 				deltaTime = posTimeRegister[i+2] - posTimeRegister[i+1];
 
 				if(deltaTime == 0){
-
-					return false;
+                    return false;
 				}
 
 				speedB = deltaDistance / deltaTime;
@@ -828,22 +826,20 @@ public class Math3d {
 			averageSpeedChange /= positionRegister.Length - 2; 
 
 			//Get the total time difference.
-			float deltaTimeTotal = posTimeRegister[posTimeRegister.Length - 1] - posTimeRegister[0];			
+			float deltaTimeTotal = posTimeRegister[posTimeRegister.Length - 1] - posTimeRegister[0];
 
-			//Now calculate the acceleration, which is an average over the amount of samples taken.
-			vector = averageSpeedChange / deltaTimeTotal;
+            //Now calculate the acceleration, which is an average over the amount of samples taken.
+            vector = averageSpeedChange / ( deltaTimeTotal / (posTimeRegister.Length - 1));
 
-			return true;		
+            return true;		
 		}
 
 		else{
-
-			return false;
+            return false;
 		}
 	}
 
-
-	/*
+    /*
 	//This function calculates angular acceleration in object space as deg/second^2, encoded as a vector. 
 	//For example, if the output vector is 0,0,-5, the angular acceleration is 5 deg/second^2 around the object Z axis, to the left. 
 	//Input: rotation (quaternion). If the output is used for motion simulation, the input transform
@@ -867,7 +863,7 @@ public class Math3d {
 	dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
 	dir = gameObject.transform.TransformDirection(dir);
 	Debug.DrawRay(gameObject.transform.position, dir, Color.blue);	*/
-	public static bool AngularAcceleration(out Vector3 vector, Quaternion rotation, int samples){
+    public static bool AngularAcceleration(out Vector3 vector, Quaternion rotation, int samples){
 
 		Vector3 averageSpeedChange = Vector3.zero;
 		vector = Vector3.zero;
