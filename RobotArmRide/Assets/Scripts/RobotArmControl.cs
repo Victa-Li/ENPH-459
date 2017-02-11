@@ -82,7 +82,7 @@ public class RobotArmControl : MonoBehaviour {
 		if (RA_complete) {
 
 			//setAxes (sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.z * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f);
-			setCoords(-RA_x, RA_z, RA_y, RA_roll, -RA_pitch, RA_yaw);
+			setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
 			setAxes (axis_base, axis_lower, axis_upper, axis_wrist, axis_seat);
 
 			// Fix axes to go from 0 to 360 and centred at 90:

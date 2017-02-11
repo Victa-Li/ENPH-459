@@ -43,7 +43,7 @@ public class ForceSimulator : MonoBehaviour {
         //Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
         // Testing a better rotation method:
         Vector3 AM_from = Physics.gravity;
-        Vector3 AM_to = Physics.gravity + new Vector3( localAccel.x, 0, localAccel.z);
+        Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
         // Impulse simulation
 
