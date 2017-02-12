@@ -74,7 +74,7 @@ public class ForceSimulator : MonoBehaviour {
         // Set transform
         transform.position = initialPosition;
         Vector3 temp = mc.transform.rotation.eulerAngles;
-        Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.x, 0, temp.z));
+        Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
         transform.rotation = rotation_no_y * AM_rotation;
 
 		testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);

@@ -11,11 +11,19 @@ public class Math3d {
 	private static float[] posTimeRegister;
 	private static int positionSamplesTaken = 0;
 
-	private static Quaternion[] rotationRegister;
+    private static Vector3[] positionRegister1;
+    private static float[] posTimeRegister1;
+    private static int positionSamplesTaken1 = 0;
+
+    private static Quaternion[] rotationRegister;
 	private static float[] rotTimeRegister;
 	private static int rotationSamplesTaken = 0;
 
-	public static void Init(){
+    private static Quaternion[] rotationRegister1;
+    private static float[] rotTimeRegister1;
+    private static int rotationSamplesTaken1 = 0;
+
+    public static void Init(){
 
 		tempChild = (new GameObject("Math3d_TempChild")).transform;
 		tempParent = (new GameObject("Math3d_TempParent")).transform;
@@ -839,6 +847,58 @@ public class Math3d {
 		}
 	}
 
+    // Linear velocity
+    public static bool LinearVelocity(out Vector3 vector, Vector3 position, int samples)
+    {
+        Vector3 averagePositionChange = Vector3.zero;
+        vector = Vector3.zero;
+        Vector3 deltaDistance;
+        float deltaTime;
+
+        //Clamp sample amount. In order to calculate acceleration we need at least 2 changes
+        //in position
+        if (samples < 2)
+        {
+            samples = 2;
+        }
+
+        //Initialize
+        if (positionRegister1 == null)
+        {
+            positionRegister1 = new Vector3[samples];
+            posTimeRegister1 = new float[samples];
+        }
+
+        //Fill the position and time sample array and shift the location in the array to the left
+        //each time a new sample is taken. This way index 0 will always hold the oldest sample and the
+        //highest index will always hold the newest sample. 
+        for (int i = 0; i < positionRegister1.Length - 1; i++)
+        {
+
+            positionRegister1[i] = positionRegister1[i + 1];
+            posTimeRegister1[i] = posTimeRegister1[i + 1];
+        }
+        positionRegister1[positionRegister1.Length - 1] = position;
+        posTimeRegister1[posTimeRegister1.Length - 1] = Time.time;
+
+        positionSamplesTaken1++;
+
+        //The output velocity can only be calculated if enough samples are taken.
+        if (positionSamplesTaken1 >= samples)
+        {
+            deltaDistance = positionRegister1[positionRegister1.Length - 1] - positionRegister1[0];
+            deltaTime = posTimeRegister1[posTimeRegister1.Length - 1] - posTimeRegister1[0];
+            vector = deltaDistance / deltaTime;
+
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+
     /*
 	//This function calculates angular acceleration in object space as deg/second^2, encoded as a vector. 
 	//For example, if the output vector is 0,0,-5, the angular acceleration is 5 deg/second^2 around the object Z axis, to the left. 
@@ -936,9 +996,9 @@ public class Math3d {
 			float deltaTimeTotal = rotTimeRegister[rotTimeRegister.Length - 1] - rotTimeRegister[0];			
 
 			//Now calculate the acceleration, which is an average over the amount of samples taken.
-			vector = averageSpeedChange / deltaTimeTotal;
+			vector = averageSpeedChange / (deltaTimeTotal / (posTimeRegister.Length - 1));
 
-			return true;		
+            return true;		
 		}
 
 		else{
@@ -947,9 +1007,80 @@ public class Math3d {
 		}
 	}
 
-	//Get y from a linear function, with x as an input. The linear function goes through points
-	//0,0 on the left ,and Qxy on the right.
-	public static float LinearFunction2DBasic(float x, float Qx, float Qy){
+    // Angular velocity
+    public static bool AngularVelocity(out Vector3 vector, Quaternion rotation, int samples)
+    {
+        Vector3 averageSpeedChange = Vector3.zero;
+        vector = Vector3.zero;
+        Quaternion deltaRotation;
+        float deltaTime;
+        Vector3 speed;
+
+        //Clamp sample amount. In order to calculate acceleration we need at least 2 changes
+        //in speed, so we need at least 3 rotation samples.
+        if (samples < 2)
+            samples = 2;
+
+        //Initialize
+        if (rotationRegister1 == null)
+        {
+
+            rotationRegister1 = new Quaternion[samples];
+            rotTimeRegister1 = new float[samples];
+        }
+
+        //Fill the rotation and time sample array and shift the location in the array to the left
+        //each time a new sample is taken. This way index 0 will always hold the oldest sample and the
+        //highest index will always hold the newest sample. 
+        for (int i = 0; i < rotationRegister1.Length - 1; i++)
+        {
+
+            rotationRegister1[i] = rotationRegister1[i + 1];
+            rotTimeRegister1[i] = rotTimeRegister1[i + 1];
+        }
+        rotationRegister1[rotationRegister1.Length - 1] = rotation;
+        rotTimeRegister1[rotTimeRegister1.Length - 1] = Time.time;
+
+        rotationSamplesTaken1++;
+
+        //The output acceleration can only be calculated if enough samples are taken.
+        if (rotationSamplesTaken1 >= samples)
+        {
+
+            //Calculate average speed change.
+            for (int i = 0; i < rotationRegister1.Length - 1; i++)
+            {
+
+                deltaRotation = SubtractRotation(rotationRegister1[i + 1], rotationRegister1[i]);
+                deltaTime = rotTimeRegister1[i + 1] - rotTimeRegister1[i];
+
+                //If deltaTime is 0, the output is invalid.
+                if (deltaTime == 0)
+                {
+                    return false;
+                }
+
+                speed = RotDiffToSpeedVec(deltaRotation, deltaTime);
+
+                averageSpeedChange += speed;
+            }
+
+            //Now this is the average speed change.
+            vector = averageSpeedChange / (rotationRegister1.Length - 1);
+
+            return true;
+        }
+
+        else
+        {
+
+            return false;
+        }
+    }
+
+    //Get y from a linear function, with x as an input. The linear function goes through points
+    //0,0 on the left ,and Qxy on the right.
+    public static float LinearFunction2DBasic(float x, float Qx, float Qy){
 
 		float y = x * (Qy / Qx);
 

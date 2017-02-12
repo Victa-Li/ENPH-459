@@ -1744,7 +1744,15 @@ MonoBehaviour:
   rawInputVert: 0
   handbrake: 0
   acceleration: {x: 0, y: 0, z: 0}
-  accelerationSamples: 10
+  linearAcceleration: {x: 0, y: 0, z: 0}
+  linearVelocity: {x: 0, y: 0, z: 0}
+  angularAcceleration: {x: 0, y: 0, z: 0}
+  angularVelocity: {x: 0, y: 0, z: 0}
+  velocity_r: {x: 0, y: 0, z: 0}
+  linearAccelerationSamples: 10
+  angularAccelerationSamples: 10
+  linearVelocitySamples: 10
+  angularVelocitySamples: 2
   pm: {fileID: 712564405}
 --- !u!114 &712564405
 MonoBehaviour:
@@ -3236,7 +3244,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_FullTorqueOverAllWheels
-      value: 1000
+      value: 2500
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_ReverseTorque
@@ -3272,7 +3280,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_SlipLimit
-      value: 0.1
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_CarDriveType
@@ -3288,7 +3296,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 11400002, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
       propertyPath: m_Downforce
-      value: 20
+      value: 100
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0e7ee4df08df88c4880f43398f9ad2c2, type: 2}
@@ -3495,6 +3503,7 @@ MonoBehaviour:
   roll: 0
   yaw: 0
   localAccel: {x: 0, y: 0, z: 0}
+  accelerationLimit: {x: 15, y: 20, z: 10}
 --- !u!114 &1274233954
 MonoBehaviour:
   m_ObjectHideFlags: 0
