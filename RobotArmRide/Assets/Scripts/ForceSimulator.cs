@@ -21,8 +21,9 @@ public class ForceSimulator : MonoBehaviour {
 	public float yaw;
 
     public Vector3 localAccel;
+    public Vector3 accelerationLimit = new Vector3(15, 20, 10);
 
-	private Vector3 initialPosition;
+    private Vector3 initialPosition;
 	// Use this for initialization
 	void Start () {
 		initialPosition = transform.position;
@@ -34,12 +35,26 @@ public class ForceSimulator : MonoBehaviour {
 	void Update () {
 		// Get the local accelerations:
 		localAccel = mc.transform.InverseTransformDirection(mc.acceleration);
-		// Acceleration Mapping
-		//pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
-		//roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
-		//yaw = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, transform.localPosition.z);
+        // Limit the acceleration
+        if (localAccel.x > accelerationLimit.x)
+            localAccel.x = accelerationLimit.x;
+        if (localAccel.x < -accelerationLimit.x)
+            localAccel.x = -accelerationLimit.x;
+        if (localAccel.y > accelerationLimit.y)
+            localAccel.y = accelerationLimit.y;
+        if (localAccel.y < -accelerationLimit.y)
+            localAccel.y = -accelerationLimit.y;
+        if (localAccel.z > accelerationLimit.z)
+            localAccel.z = accelerationLimit.z;
+        if (localAccel.z < -accelerationLimit.z)
+            localAccel.z = -accelerationLimit.z;
 
-		AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
+        // Acceleration Mapping
+        //pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
+        //roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
+        //yaw = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, transform.localPosition.z);
+
+        AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
         //Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
         // Testing a better rotation method:
         Vector3 AM_from = Physics.gravity;
