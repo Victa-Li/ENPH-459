@@ -13,7 +13,7 @@ public class ForceSimulator : MonoBehaviour {
 	/// Acceleration mapping reality factor
 	public float AM_RF;
 
-    /// Simulated - percieved acceleration
+    /// Percieved acceleration - Simulated acceleration
     public float d_acceleration;
 
 	public float pitch;
@@ -54,12 +54,14 @@ public class ForceSimulator : MonoBehaviour {
         //roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
         //yaw = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, transform.localPosition.z);
 
-        AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
+        //AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
         //Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
         // Testing a better rotation method:
         Vector3 AM_from = Physics.gravity;
         Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
+
+        d_acceleration = (Physics.gravity.magnitude - AM_to.magnitude);
         // Impulse simulation
 
         // Small

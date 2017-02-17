@@ -1748,7 +1748,6 @@ MonoBehaviour:
   linearVelocity: {x: 0, y: 0, z: 0}
   angularAcceleration: {x: 0, y: 0, z: 0}
   angularVelocity: {x: 0, y: 0, z: 0}
-  velocity_r: {x: 0, y: 0, z: 0}
   linearAccelerationSamples: 10
   angularAccelerationSamples: 10
   linearVelocitySamples: 10
@@ -5136,15 +5135,15 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4000011995070676, guid: 0d824cfe31ec89245898bef2a35449f9, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4000011995070676, guid: 0d824cfe31ec89245898bef2a35449f9, type: 2}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4000011995070676, guid: 0d824cfe31ec89245898bef2a35449f9, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4000011995070676, guid: 0d824cfe31ec89245898bef2a35449f9, type: 2}
       propertyPath: m_LocalRotation.w
