@@ -3,6 +3,7 @@
 public class SphericalRollerMovement : PlayerMover {
 
 	public float forceMultiplier = 5;
+    public bool reverseDirections = false;
 
 	MovementController mc;
 	Rigidbody rb;
@@ -27,7 +28,11 @@ public class SphericalRollerMovement : PlayerMover {
 		float moveHorizontal = mc.rawInputHoriz;
 		float moveVertical = mc.rawInputVert;
 
-		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
-		rb.AddForce (movement * forceMultiplier);
+        Vector3 movement;
+        if (reverseDirections)
+    		movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+        else
+            movement = new Vector3(moveVertical, 0.0f, -moveHorizontal);
+        rb.AddForce (movement * forceMultiplier);
 	}
 }

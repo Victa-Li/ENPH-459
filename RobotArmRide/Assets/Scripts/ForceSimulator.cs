@@ -14,7 +14,7 @@ public class ForceSimulator : MonoBehaviour {
 	public float AM_RF;
 
     /// Percieved acceleration - Simulated acceleration
-    public float d_acceleration;
+    //public float d_acceleration;
 
 	public float pitch;
 	public float roll;
@@ -61,7 +61,7 @@ public class ForceSimulator : MonoBehaviour {
         Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
 
-        d_acceleration = (Physics.gravity.magnitude - AM_to.magnitude);
+        //d_acceleration = (Physics.gravity.magnitude - AM_to.magnitude);
         // Impulse simulation
 
         // Small
