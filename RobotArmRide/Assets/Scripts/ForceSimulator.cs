@@ -23,6 +23,10 @@ public class ForceSimulator : MonoBehaviour {
     public Vector3 localAccel;
     public Vector3 accelerationLimit = new Vector3(15, 20, 10);
 
+    public Vector3 simulatedAccel;
+    public float h1;
+    public float h2;
+
     private Vector3 initialPosition;
 	// Use this for initialization
 	void Start () {
@@ -61,6 +65,10 @@ public class ForceSimulator : MonoBehaviour {
         Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
 
+        // Calculate the expected "felt" acceleration:
+        h1 = (new Vector2(localAccel.x, localAccel.z)).magnitude;
+        h2 = (new Vector2(h1, Physics.gravity.magnitude)).magnitude;
+        simulatedAccel = new Vector3(localAccel.x, 0, localAccel.z) / h2 * Physics.gravity.magnitude;
         //d_acceleration = (Physics.gravity.magnitude - AM_to.magnitude);
         // Impulse simulation
 
