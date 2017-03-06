@@ -1,4 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Xml.Serialization;
+using System.IO;
+using Assets.Scripts;
 
 public class RobotArmControl : MonoBehaviour {
 
@@ -35,12 +39,18 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
+    private CarObject car;
+    XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
+    StreamWriter writer = new StreamWriter("robot.xml");
 
-	//private scaleByAcceleration sbaScript;
+    //private scaleByAcceleration sbaScript;
 
-	// Use this for initialization
-	void Start () {
-		Transform[] RA_parts = GetComponentsInChildren<Transform> ();
+    // Use this for initialization
+    void Start () {
+        car = new CarObject();
+        serializer = new XmlSerializer(typeof(CarObject));
+        writer = new StreamWriter("robot.xml");
+        Transform[] RA_parts = GetComponentsInChildren<Transform> ();
 		for (int i = 0; i < RA_parts.Length; i++) {
 			if (RA_parts[i].name == "base")
 				RobotArm_base = RA_parts [i].gameObject;
@@ -56,6 +66,7 @@ public class RobotArmControl : MonoBehaviour {
 				RobotArm_wrist_peice = RA_parts [i].gameObject;
 			else if (RA_parts[i].name == "seat")
 				RobotArm_seat = RA_parts[i].gameObject;
+            
 			
 		}
 		if (RobotArm_base != null
@@ -71,14 +82,25 @@ public class RobotArmControl : MonoBehaviour {
 		} else {
 			Debug.LogError ("Robot arm not initialized!");
 		}
+
+
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        car.x = RA_x;
+        car.y = RA_y;
+        car.z = RA_z;
+        car.anglex = RA_pitch;
+        car.angley = RA_roll;
+        car.anglez = RA_yaw;
+        serializer.Serialize(writer.BaseStream, car);
 
-	}
+    }
 
 	void FixedUpdate() {
+      
 		if (RA_complete) {
 
 			//setAxes (sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.z * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f);
@@ -101,6 +123,8 @@ public class RobotArmControl : MonoBehaviour {
 			axis_wrist += axis_wrist_offset;
 			axis_seat += axis_seat_offset;
 		}
+	    
+       
 	}
 
 	// All axes are in degrees
