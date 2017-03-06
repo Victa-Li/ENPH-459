@@ -18,7 +18,7 @@ public class UITextUpdater : MonoBehaviour {
 
         targetVectorText.text = "Target Accel: " + string.Format("{0:0.00}", fs.localAccel.x) + ", "
             + string.Format("{0:0.00}", fs.localAccel.y) + ", " + string.Format("{0:0.00}", fs.localAccel.z) + "\n" +
-            "Sim Accel:     " + string.Format("{0:0.00}", fs.simulatedAccel.x) + ", "
-            + string.Format("{0:0.00}", fs.simulatedAccel.y) + ", " + string.Format("{0:0.00}", fs.simulatedAccel.z);
+            "Sim Accel:     " + string.Format("{0:0.00}", fs.feltAccel.x) + ", "
+            + string.Format("{0:0.00}", fs.feltAccel.y) + ", " + string.Format("{0:0.00}", fs.feltAccel.z);
     }
 }
