@@ -40,7 +40,7 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
-    private CarObject car;
+    public CarObject car;
     XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
     private FileStream stream;
     //StreamWriter writer = new StreamWriter("robot.xml");
@@ -51,6 +51,7 @@ public class RobotArmControl : MonoBehaviour {
     // Use this for initialization
     void Start () {
         car = new CarObject();
+        Debug.Log("inside start");
         //serializer = new XmlSerializer(typeof(CarObject));
        // stream = new FileStream("robot.xml", FileMode.OpenOrCreate);
         //writer = new StreamWriter("robot.xml");
