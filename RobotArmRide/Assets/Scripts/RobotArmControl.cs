@@ -3,6 +3,7 @@ using System.Collections;
 using System.Xml.Serialization;
 using System.IO;
 using Assets.Scripts;
+using UnityEngine.Assertions;
 
 public class RobotArmControl : MonoBehaviour {
 
@@ -41,15 +42,18 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
     private CarObject car;
     XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
-    StreamWriter writer = new StreamWriter("robot.xml");
+    private FileStream stream;
+    //StreamWriter writer = new StreamWriter("robot.xml");
+    
 
     //private scaleByAcceleration sbaScript;
 
     // Use this for initialization
     void Start () {
         car = new CarObject();
-        serializer = new XmlSerializer(typeof(CarObject));
-        writer = new StreamWriter("robot.xml");
+        //serializer = new XmlSerializer(typeof(CarObject));
+       // stream = new FileStream("robot.xml", FileMode.OpenOrCreate);
+        //writer = new StreamWriter("robot.xml");
         Transform[] RA_parts = GetComponentsInChildren<Transform> ();
 		for (int i = 0; i < RA_parts.Length; i++) {
 			if (RA_parts[i].name == "base")
@@ -88,14 +92,20 @@ public class RobotArmControl : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
+	    stream = new FileStream("robot.xml", FileMode.Append);
         car.x = RA_x;
         car.y = RA_y;
         car.z = RA_z;
         car.anglex = RA_pitch;
         car.angley = RA_roll;
         car.anglez = RA_yaw;
-        serializer.Serialize(writer.BaseStream, car);
+        
+        Assert.IsNotNull(stream);
+        Assert.IsNotNull(car);
+        serializer.Serialize(stream, car);
+        stream.Close();
 
     }
 
