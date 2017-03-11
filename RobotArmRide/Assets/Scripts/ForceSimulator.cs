@@ -5,7 +5,6 @@ public class ForceSimulator : MonoBehaviour {
 	public Vector3 testVector;
     
 	public MovementController mc;
-	float g;
 	public float exaggeration = 1.0f;
 	/// Reality factor threshold
 	public float RF_threshold = 0.95f;
@@ -64,29 +63,28 @@ public class ForceSimulator : MonoBehaviour {
         // Impulse simulation up-down:
         if (Mathf.Abs(localAccel.y) > ISverticalThreshold)
             rb.AddForce(transform.up * localAccel.y * ISverticalMultiplier, ForceMode.Acceleration);
-        //else
-        //    rb.velocity = Vector3.zero;
-        
-        Vector3 returnStep = Vector3.zero;
-        float d_x = transform.position.x - initialPosition.x;
-        float d_y = transform.position.y - initialPosition.y;
-        float d_z = transform.position.z - initialPosition.z;
+        else
+        {
+            Vector3 returnStep = Vector3.zero;
+            float d_x = transform.position.x - initialPosition.x;
+            float d_y = transform.position.y - initialPosition.y;
+            float d_z = transform.position.z - initialPosition.z;
 
-        if (Mathf.Abs(d_x) > ISverticalReturnSpeed / 2)
-        //    returnStep.x = -Mathf.Sign(d_x);
-        //else
-            returnStep.x = Mathf.Lerp(-Mathf.Sign(d_x), 0, 0.5f);
-        if (Mathf.Abs(d_y) > ISverticalReturnSpeed / 2)
-        //    returnStep.y = -Mathf.Sign(d_y);
-        //else
-            returnStep.y = Mathf.Lerp(-Mathf.Sign(d_y), 0, 0.5f);
-        if (Mathf.Abs(d_z) > ISverticalReturnSpeed / 2)
-        //    returnStep.z = -Mathf.Sign(d_z);
-        //else
-            returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
+            if (Mathf.Abs(d_x) > ISverticalReturnSpeed / 2)
+                //    returnStep.x = -Mathf.Sign(d_x);
+                //else
+                returnStep.x = Mathf.Lerp(-Mathf.Sign(d_x), 0, 0.5f);
+            if (Mathf.Abs(d_y) > ISverticalReturnSpeed / 2)
+                //    returnStep.y = -Mathf.Sign(d_y);
+                //else
+                returnStep.y = Mathf.Lerp(-Mathf.Sign(d_y), 0, 0.5f);
+            if (Mathf.Abs(d_z) > ISverticalReturnSpeed / 2)
+                //    returnStep.z = -Mathf.Sign(d_z);
+                //else
+                returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
 
-        transform.Translate(returnStep * ISverticalReturnSpeed);
-
+            transform.Translate(returnStep * ISverticalReturnSpeed);
+        }
 
         // Rotation
 
