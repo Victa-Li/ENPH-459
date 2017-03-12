@@ -40,7 +40,7 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
-    private CarObject car;
+    public CarObject car;
     XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
     private FileStream stream;
     //StreamWriter writer = new StreamWriter("robot.xml");
@@ -94,7 +94,7 @@ public class RobotArmControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	    stream = new FileStream("robot.xml", FileMode.Append);
+	    stream = new FileStream("robot.xml", FileMode.Create);
         car.x = RA_x;
         car.y = RA_y;
         car.z = RA_z;
@@ -105,7 +105,10 @@ public class RobotArmControl : MonoBehaviour {
         Assert.IsNotNull(stream);
         Assert.IsNotNull(car);
         serializer.Serialize(stream, car);
-        stream.Close();
+        //var container = serializer.Deserialize(stream) as CarObject;
+       
+        //buildconnect.Connect(server,container.ToString());
+        //stream.Close();
 
     }
 
