@@ -3611,12 +3611,18 @@ MonoBehaviour:
   mc: {fileID: 712564404}
   exaggeration: 1
   localAccel: {x: 0, y: 0, z: 0}
-  accelerationLimit: {x: 15, y: 50, z: 10}
+  accelerationLimit: {x: 50, y: 50, z: 50}
   feltAccel: {x: 0, y: 0, z: 0}
   seatAccel: {x: 0, y: 0, z: 0}
+  leftRightSensitivity: 0.3
+  forwardBackSensitivity: 1
   ISverticalReturnSpeed: 0.004
   ISverticalMultiplier: 0.3
   ISverticalThreshold: 0.5
+  ISlimitMultiplier: 1
+  r: 0
+  theta: 0
+  phi: 0
   returnPosition: {x: 0, y: 0, z: 0}
   enableHeightAdjust: 1
   seatAccelSamples: 10

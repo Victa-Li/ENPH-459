@@ -15,7 +15,15 @@ public class ForceSimulator : MonoBehaviour {
     public Vector3 feltAccel;
     public Vector3 seatAccel;
 
-    // Impusle Simulation Parameters
+    //***************************************//
+    //*** Acceleration Mapping Parameters ***//
+    //***************************************//
+    public float leftRightSensitivity = 0.5f;
+    public float forwardBackSensitivity = 1.0f;
+
+    //*************************************//
+    //*** Impusle Simulation Parameters ***//
+    //*************************************//
     public float ISverticalReturnSpeed = 0.01f;
     public float ISverticalMultiplier = 0.5f;
     public float ISverticalThreshold = 1;
@@ -123,21 +131,39 @@ public class ForceSimulator : MonoBehaviour {
 	
 	void FixedUpdate () {
         if (enableHeightAdjust)
-        {
             returnPosition.y = RobotArm.transform.position.y + Mathf.Lerp(r_limits[1]+0.3f, r_limits[2], (mc.transform.position.y + 5) / 40);
-        }
+
+        //*********************************//
+        //*** Impulse Simulation Limits ***//
+        //*********************************//
         r = (transform.position - RobotArm.transform.position).magnitude;
-        theta = Mathf.Atan2(transform.position.z - RobotArm.transform.position.z, transform.position.x - RobotArm.transform.position.x);
-        phi = Mathf.Acos((transform.position.y - RobotArm.transform.position.y) / r);
-        
+        theta = Mathf.Atan2(transform.position.z - RobotArm.transform.position.z, transform.position.x - RobotArm.transform.position.x) * Mathf.Rad2Deg;
+        phi = Mathf.Acos((transform.position.y - RobotArm.transform.position.y) / r) * Mathf.Rad2Deg;
+        ISlimitMultiplier = 1;
         if (r > r_limits[0] && r < r_limits[3])
         {
             if (r < r_limits[1])
-                ISlimitMultiplier = Mathf.Lerp(0, 1, (r - r_limits[0]) / (r_limits[1] - r_limits[0]));
+                ISlimitMultiplier = Mathf.Min( Mathf.Lerp(0, 1, (r - r_limits[0]) / (r_limits[1] - r_limits[0])), ISlimitMultiplier);
             else if (r > r_limits[2])
-                ISlimitMultiplier = Mathf.Lerp(1, 0, (r - r_limits[2]) / (r_limits[3] - r_limits[2]));
-            else
-                ISlimitMultiplier = 1;
+                ISlimitMultiplier = Mathf.Min( Mathf.Lerp(1, 0, (r - r_limits[2]) / (r_limits[3] - r_limits[2])), ISlimitMultiplier);
+        }
+        else
+            ISlimitMultiplier = 0;
+        if (theta > theta_limits[0] && theta < theta_limits[3])
+        {
+            if (theta < theta_limits[1])
+                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (theta - theta_limits[0]) / (theta_limits[1] - theta_limits[0])), ISlimitMultiplier);
+            else if (theta > theta_limits[2])
+                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (theta - theta_limits[2]) / (theta_limits[3] - theta_limits[2])), ISlimitMultiplier);
+        }
+        else
+            ISlimitMultiplier = 0;
+        if (phi > phi_limits[0] && phi < phi_limits[3])
+        {
+            if (phi < phi_limits[1])
+                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (phi - phi_limits[0]) / (phi_limits[1] - phi_limits[0])), ISlimitMultiplier);
+            else if (phi > phi_limits[2])
+                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (phi - phi_limits[2]) / (phi_limits[3] - phi_limits[2])), ISlimitMultiplier);
         }
         else
             ISlimitMultiplier = 0;
@@ -161,7 +187,7 @@ public class ForceSimulator : MonoBehaviour {
         //*** Acceleration Mapping ***//
         //****************************//
         Vector3 AM_from = Physics.gravity;
-        Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
+        Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z * forwardBackSensitivity, 0, -localAccel.x * leftRightSensitivity);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
 
         //**********************************//
