@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Scripts
 {
-    class CarObject
+    public class CarObject
     {
         public float x;
         public float y;
