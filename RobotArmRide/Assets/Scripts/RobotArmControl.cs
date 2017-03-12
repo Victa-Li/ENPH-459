@@ -51,6 +51,7 @@ public class RobotArmControl : MonoBehaviour {
     // Use this for initialization
     void Start () {
         car = new CarObject();
+        Debug.Log("inside start");
         //serializer = new XmlSerializer(typeof(CarObject));
        // stream = new FileStream("robot.xml", FileMode.OpenOrCreate);
         //writer = new StreamWriter("robot.xml");
