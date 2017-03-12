@@ -1251,8 +1251,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -5, y: -25}
-  m_SizeDelta: {x: 450, y: 32}
+  m_AnchoredPosition: {x: -5, y: -40}
+  m_SizeDelta: {x: 450, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &425673384
 MonoBehaviour:
@@ -1300,7 +1300,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Target Accel: \nSim Accel:    "
+  m_Text: "Target Accel: \nSim Accel:    \nSeat Accel:\nTotal Accel:"
 --- !u!222 &425673386
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3091,8 +3091,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1025217193}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3800001, z: 0}
-  m_LocalScale: {x: 3.6, y: 3.6, z: 3.6}
+  m_LocalPosition: {x: 0, y: 0.38, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1114606523}
   m_RootOrder: 1
@@ -3107,7 +3107,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.4
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1047186278
 GameObject:
@@ -3434,7 +3434,7 @@ Transform:
   m_GameObject: {fileID: 1173825236}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.38, z: 0}
-  m_LocalScale: {x: 3.6, y: 3.6, z: 3.6}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1114606523}
   m_RootOrder: 0
@@ -3449,7 +3449,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.8
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!4 &1194094175 stripped
 Transform:
@@ -3590,7 +3590,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1274233951}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.8, y: 1.4, z: 0}
+  m_LocalPosition: {x: 0.8, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 737403925}
@@ -3610,17 +3610,16 @@ MonoBehaviour:
   testVector: {x: 0, y: 0, z: 0}
   mc: {fileID: 712564404}
   exaggeration: 1
-  RF_threshold: 0.9
-  AM_RF: 0
-  pitch: 0
-  roll: 0
-  yaw: 0
   localAccel: {x: 0, y: 0, z: 0}
   accelerationLimit: {x: 15, y: 50, z: 10}
   feltAccel: {x: 0, y: 0, z: 0}
-  ISverticalReturnSpeed: 0.007
+  seatAccel: {x: 0, y: 0, z: 0}
+  ISverticalReturnSpeed: 0.004
   ISverticalMultiplier: 0.3
   ISverticalThreshold: 0.5
+  returnPosition: {x: 0, y: 0, z: 0}
+  enableHeightAdjust: 1
+  seatAccelSamples: 10
 --- !u!114 &1274233954
 MonoBehaviour:
   m_ObjectHideFlags: 0
