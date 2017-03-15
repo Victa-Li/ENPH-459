@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Xml.Serialization;
 using System.IO;
+using System.Text;
 using Assets.Scripts;
 using UnityEngine.Assertions;
 
@@ -95,7 +96,8 @@ public class RobotArmControl : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
 	{
-	    stream = new FileStream("robot.xml", FileMode.Create);
+        Debug.Log("ini update");
+        stream = new FileStream("robot.xml", FileMode.Create);
         car.x = RA_x;
         car.y = RA_y;
         car.z = RA_z;
@@ -106,14 +108,27 @@ public class RobotArmControl : MonoBehaviour {
         Assert.IsNotNull(stream);
         Assert.IsNotNull(car);
         serializer.Serialize(stream, car);
+        
         //var container = serializer.Deserialize(stream) as CarObject;
-       
+
         //buildconnect.Connect(server,container.ToString());
-        //stream.Close();
+	    stream.Close();
+        var stream1 = new FileStream("robot.xml", FileMode.Open);
+        var container = serializer.Deserialize(stream1) as CarObject;
+        stream1.Close();
+        string text;
+        var fileStream=new FileStream("robot.xml",FileMode.Open,FileAccess.Read);
+        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+        {
+            text = streamReader.ReadToEnd();
+        }
+
+        buildconnect.Connect("127.0.0.1",text);
+        fileStream.Close();
 
     }
 
-	void FixedUpdate() {
+    void FixedUpdate() {
       
 		if (RA_complete) {
 
