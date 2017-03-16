@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Xml.Serialization;
 using System.IO;
 using System.Text;
+using System.Threading;
 using Assets.Scripts;
 using UnityEngine.Assertions;
 
@@ -44,8 +46,9 @@ public class RobotArmControl : MonoBehaviour {
     public CarObject car;
     XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
     private FileStream stream;
+    private Thread tid1;
     //StreamWriter writer = new StreamWriter("robot.xml");
-    
+
 
     //private scaleByAcceleration sbaScript;
 
@@ -75,7 +78,9 @@ public class RobotArmControl : MonoBehaviour {
             
 			
 		}
-		if (RobotArm_base != null
+        tid1 = new Thread(new ThreadStart(Thread1));
+       
+        if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
 		    && RobotArm_lower_arm != null
 		    && RobotArm_upper_arm_back != null
@@ -90,13 +95,13 @@ public class RobotArmControl : MonoBehaviour {
 		}
 
 
+        tid1.Start();
+
 
 	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-        Debug.Log("ini update");
+
+    public void Thread1()
+    {
         stream = new FileStream("robot.xml", FileMode.Create);
         car.x = RA_x;
         car.y = RA_y;
@@ -104,28 +109,39 @@ public class RobotArmControl : MonoBehaviour {
         car.anglex = RA_pitch;
         car.angley = RA_roll;
         car.anglez = RA_yaw;
-        
+
         Assert.IsNotNull(stream);
         Assert.IsNotNull(car);
         serializer.Serialize(stream, car);
-        
+
+
         //var container = serializer.Deserialize(stream) as CarObject;
 
         //buildconnect.Connect(server,container.ToString());
-	    stream.Close();
+        stream.Close();
         var stream1 = new FileStream("robot.xml", FileMode.Open);
         var container = serializer.Deserialize(stream1) as CarObject;
         stream1.Close();
         string text;
-        var fileStream=new FileStream("robot.xml",FileMode.Open,FileAccess.Read);
+        var fileStream = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
         using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
         {
             text = streamReader.ReadToEnd();
         }
 
-        buildconnect.Connect("127.0.0.1",text);
+        buildconnect.Connect("127.0.0.1", text);
         fileStream.Close();
 
+    }
+
+
+    // Update is called once per frame
+    void Update ()
+	{
+        Debug.Log("ini update");
+        
+       
+        
     }
 
     void FixedUpdate() {
