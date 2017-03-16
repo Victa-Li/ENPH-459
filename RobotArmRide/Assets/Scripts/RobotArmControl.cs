@@ -47,6 +47,7 @@ public class RobotArmControl : MonoBehaviour {
     XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
     private FileStream stream;
     private Thread tid1;
+    private bool threadflag;
     //StreamWriter writer = new StreamWriter("robot.xml");
 
 
@@ -94,7 +95,7 @@ public class RobotArmControl : MonoBehaviour {
 			Debug.LogError ("Robot arm not initialized!");
 		}
 
-
+        threadflag = true;
         tid1.Start();
 
 
@@ -102,47 +103,57 @@ public class RobotArmControl : MonoBehaviour {
 
     public void Thread1()
     {
-        stream = new FileStream("robot.xml", FileMode.Create);
-        car.x = RA_x;
-        car.y = RA_y;
-        car.z = RA_z;
-        car.anglex = RA_pitch;
-        car.angley = RA_roll;
-        car.anglez = RA_yaw;
-
-        Assert.IsNotNull(stream);
-        Assert.IsNotNull(car);
-        serializer.Serialize(stream, car);
-
-
-        //var container = serializer.Deserialize(stream) as CarObject;
-
-        //buildconnect.Connect(server,container.ToString());
-        stream.Close();
-        var stream1 = new FileStream("robot.xml", FileMode.Open);
-        var container = serializer.Deserialize(stream1) as CarObject;
-        stream1.Close();
-        string text;
-        var fileStream = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
-        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+        while (threadflag)
         {
-            text = streamReader.ReadToEnd();
-        }
+            stream = new FileStream("robot.xml", FileMode.Create);
+            car.x = RA_x;
+            car.y = RA_y;
+            car.z = RA_z;
+            car.anglex = RA_pitch;
+            car.angley = RA_roll;
+            car.anglez = RA_yaw;
 
-        buildconnect.Connect("127.0.0.1", text);
-        fileStream.Close();
+            Assert.IsNotNull(stream);
+            Assert.IsNotNull(car);
+            serializer.Serialize(stream, car);
+
+
+            //var container = serializer.Deserialize(stream) as CarObject;
+
+            //buildconnect.Connect(server,container.ToString());
+            stream.Close();
+            var stream1 = new FileStream("robot.xml", FileMode.Open);
+            var container = serializer.Deserialize(stream1) as CarObject;
+            stream1.Close();
+            string text;
+            var fileStream = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
+            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
+            {
+                text = streamReader.ReadToEnd();
+            }
+
+            buildconnect.Connect("127.0.0.1", text);
+            fileStream.Close();
+        }
 
     }
 
-
+    void OnApplicationQuit()
+    {
+        threadflag = false;
+        tid1.Join();
+        tid1.Abort();
+    }
     // Update is called once per frame
     void Update ()
 	{
-        Debug.Log("ini update");
-        
+        //Debug.Log("ini update");
+
+	    //tid1.Join();
        
-        
-    }
+
+
+	}
 
     void FixedUpdate() {
       
