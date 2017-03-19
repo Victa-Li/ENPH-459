@@ -11,9 +11,14 @@ namespace KRCSimulator
 {
     class Program
     {
-        private const int listenPort = 59152;
-        private int replyPort = 53453; // This value should be updated every packet, it may or may not change
+        private const int targetPort = 59152;
         private const String targetAddress = "206.12.45.26"; //"192.168.2.100";
+
+        private static double X = 331.7, Y = -1.2, Z = 852.0, A = -90.0, B = 0.9, C = -90.0;
+        private static double sineValue;
+        private static long timestamp;
+        private static int testOutput = 1;
+        private static int delay = 0;
 
         static void Main(string[] args)
         {
@@ -22,26 +27,15 @@ namespace KRCSimulator
 
             Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             IPAddress send_to_address = IPAddress.Parse(targetAddress);
-            IPEndPoint sending_end_point = new IPEndPoint(send_to_address, listenPort);
+            IPEndPoint sending_end_point = new IPEndPoint(send_to_address, targetPort);
 
-            UdpClient listener = new UdpClient(listenPort);
+            UdpClient listener = new UdpClient(targetPort);
             listener.Client.ReceiveTimeout = 4; // in milliseconds
-            IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, listenPort);
+            IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
             string received_data;
             byte[] receive_byte_array;
-            
-            // Sample send message
-            string replyMessage = "< Rob Type =\"KUKA\">"+
-                "< RIst X =\"331.7\" Y=\"-1.2\" Z=\"852.0\" A=\"-90.0\" B=\"0.9\" C=\"-90.0\"/>"+
-                "< RSol X =\"331.7\" Y=\"-1.2\" Z=\"852.0\" A=\"-90.0\" B=\"0.9\" C=\"-90.0\"/>"+
-                "< Delay D =\"0\"/>"+
-                "< Tech C11 =\"0.0\" C12=\"0.0\" C13=\"0.0\" C14=\"0.0\" C15=\"0.0\" C16=\"0.0\"  C17=\"0.0\" C18=\"0.0\" C19=\"0.0\" C110=\"0.0\"/>"+
-                "< TestOutput > 1 < TestOutput />"+
-                "< SineSource > 0.0 </ SineSource >"+
-                "< IPOC > 398220 </ IPOC >"+
-                "</ Rob >";
 
-            Console.WriteLine("Simulator started on port " + listenPort);
+            Console.WriteLine("Simulator started on port " + targetPort);
             int count = 10;
 
             while (!done)
@@ -52,6 +46,22 @@ namespace KRCSimulator
                 }
                 else
                 {
+                    // Update internal values:
+                    timestamp = DateTime.Now.Second;
+                    sineValue = Math.Sin(DateTime.Now.Millisecond * Math.PI / 2000);
+
+                    // Sample send message
+                    string replyMessage = "< Rob Type =\"KUKA\">" +
+                        "< RIst X =\"" + X + "\" Y=\"" + Y + "\" Z=\"" + Z + "\" A=\"" + A + "\" B=\"" + B + "\" C=\"" + C + "\"/>" +
+                        "< RSol X =\"" + X + "\" Y=\"" + Y + "\" Z=\"" + Z + "\" A=\"" + A + "\" B=\"" + B + "\" C=\"" + C + "\"/>" +
+                        "< Delay D =\"" + delay + "\"/>" +
+                        "< Tech C11 =\"0.0\" C12=\"0.0\" C13=\"0.0\" C14=\"0.0\" C15=\"0.0\" C16=\"0.0\"  C17=\"0.0\" C18=\"0.0\" C19=\"0.0\" C110=\"0.0\"/>" +
+                        "< TestOutput > " + testOutput + " < TestOutput />" +
+                        "< SineSource > " + sineValue + " </ SineSource >" +
+                        "< IPOC > " + timestamp + " </ IPOC >" +
+                        "</ Rob >";
+
+
                     byte[] send_buffer = Encoding.ASCII.GetBytes(replyMessage);
                     
                     Console.WriteLine("Sending to: {0}",
