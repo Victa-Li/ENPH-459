@@ -12,8 +12,8 @@ namespace KRCSimulator
     class Program
     {
         private const int listenPort = 59152;
-        private int replyport = 53453; // This value should be updated every packet, it may or may not change
-        private const String targetAddress = "192.168.2.100";
+        private int replyPort = 53453; // This value should be updated every packet, it may or may not change
+        private const String targetAddress = "206.12.45.26"; //"192.168.2.100";
 
         static void Main(string[] args)
         {
@@ -25,28 +25,37 @@ namespace KRCSimulator
             IPEndPoint sending_end_point = new IPEndPoint(send_to_address, listenPort);
 
             UdpClient listener = new UdpClient(listenPort);
-            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
+            listener.Client.ReceiveTimeout = 4; // in milliseconds
+            IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, listenPort);
             string received_data;
             byte[] receive_byte_array;
+            
+            // Sample send message
+            string replyMessage = "< Rob Type =\"KUKA\">"+
+                "< RIst X =\"331.7\" Y=\"-1.2\" Z=\"852.0\" A=\"-90.0\" B=\"0.9\" C=\"-90.0\"/>"+
+                "< RSol X =\"331.7\" Y=\"-1.2\" Z=\"852.0\" A=\"-90.0\" B=\"0.9\" C=\"-90.0\"/>"+
+                "< Delay D =\"0\"/>"+
+                "< Tech C11 =\"0.0\" C12=\"0.0\" C13=\"0.0\" C14=\"0.0\" C15=\"0.0\" C16=\"0.0\"  C17=\"0.0\" C18=\"0.0\" C19=\"0.0\" C110=\"0.0\"/>"+
+                "< TestOutput > 1 < TestOutput />"+
+                "< SineSource > 0.0 </ SineSource >"+
+                "< IPOC > 398220 </ IPOC >"+
+                "</ Rob >";
 
-            Console.WriteLine("Enter text to broadcast via UDP.");
-            Console.WriteLine("Enter a blank line to exit the program.");
+            Console.WriteLine("Simulator started on port " + listenPort);
+            int count = 10;
+
             while (!done)
             {
-                Console.WriteLine("Enter text to send, blank line to quit");
-                string text_to_send = Console.ReadLine();
-                if (text_to_send.Length == 0)
+                if (count < 0)
                 {
                     done = true;
                 }
                 else
                 {
-                    byte[] send_buffer = Encoding.ASCII.GetBytes(text_to_send);
-
-                    // Remind the user of where this is going.
-                    Console.WriteLine("sending to address: {0} port: {1}",
-                    sending_end_point.Address,
-                    sending_end_point.Port);
+                    byte[] send_buffer = Encoding.ASCII.GetBytes(replyMessage);
+                    
+                    Console.WriteLine("Sending to: {0}",
+                    sending_end_point.ToString());
                     try
                     {
                         sending_socket.SendTo(send_buffer, sending_end_point);
@@ -54,46 +63,33 @@ namespace KRCSimulator
                     catch (Exception send_exception)
                     {
                         exception_thrown = true;
-                        Console.WriteLine(" Exception {0}", send_exception.Message);
+                        Console.WriteLine(send_exception.ToString());
+                        break;
                     }
-                    if (exception_thrown == false)
+
+                    // Read reply:
+                    try
                     {
-                        Console.WriteLine("Message has been sent to address: " + targetAddress);
+                        Console.WriteLine("Waiting for reply");
+                        receive_byte_array = listener.Receive(ref receiving_end_point);
+                        Console.WriteLine("Received from {0}", receiving_end_point.ToString());
+                        received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
+                        Console.WriteLine("data follows \n\n{0}\n", received_data);
                     }
-                    else
+                    catch (Exception e)
                     {
-                        exception_thrown = false;
-                        Console.WriteLine("The exception indicates the message was not sent.");
+                        Console.WriteLine(e.ToString());
+                        break;
                     }
                 }
+                System.Threading.Thread.Sleep(1000);
+                count--;
             } // end of while (!done)
 
-            /*
-            try
-            {
-                while (!done)
-                {
-                    Console.WriteLine("Waiting for broadcast");
-                    // this is the line of code that receives the broadcase message.
-                    // It calls the receive function from the object listener (class UdpClient)
-                    // It passes to listener the end point groupEP.
-                    // It puts the data from the broadcast message into the byte array
-                    // named received_byte_array.
-                    // I don't know why this uses the class UdpClient and IPEndPoint like this.
-                    // Contrast this with the talker code. It does not pass by reference.
-                    // Note that this is a synchronous or blocking call.
-                    receive_byte_array = listener.Receive(ref groupEP);
-                    Console.WriteLine("Received a broadcast from {0}", groupEP.ToString());
-                    received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
-                    Console.WriteLine("data follows \n{0}\n\n", received_data);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
             listener.Close();
-            */
+
+            Console.WriteLine("Done. Press enter to continue...");
+            Console.ReadLine();
         }
     }
 }
