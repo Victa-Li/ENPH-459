@@ -44,11 +44,7 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
-    public CarObject car;
-    XmlSerializer serializer = new XmlSerializer(typeof(CarObject));
-    private FileStream stream;
-    private Thread tid1;
-    private bool threadflag;
+    
     //StreamWriter writer = new StreamWriter("robot.xml");
 
 
@@ -56,7 +52,7 @@ public class RobotArmControl : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        car = new CarObject();
+        
         Debug.Log("inside start");
         //serializer = new XmlSerializer(typeof(CarObject));
        // stream = new FileStream("robot.xml", FileMode.OpenOrCreate);
@@ -80,7 +76,7 @@ public class RobotArmControl : MonoBehaviour {
             
 			
 		}
-        tid1 = new Thread(new ThreadStart(Thread1));
+
        
         if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
@@ -96,72 +92,13 @@ public class RobotArmControl : MonoBehaviour {
 			Debug.LogError ("Robot arm not initialized!");
 		}
 
-        threadflag = true;
-        tid1.Start();
+
 
 
 	}
 
-    public void Thread1()
-    {
-        
-        while (threadflag)
-        {
-            //stream = new FileStream("robot.xml", FileMode.Create);
-            car.x = RA_x;
-            car.y = RA_y;
-            car.z = RA_z;
-            car.anglex = RA_pitch;
-            car.angley = RA_roll;
-            car.anglez = RA_yaw;
-            XmlWriterSettings Settings = new XmlWriterSettings();
-            Settings.OmitXmlDeclaration = true;
-            Settings.ConformanceLevel = ConformanceLevel.Fragment;
 
-            String position = "RKorr X=\"" +RA_x+ "\" Y=\""+RA_y + "\" Z=\""+RA_z + "\" A=\""+RA_pitch + "\" B=\""+RA_roll + "\" C=\""+RA_yaw+"\"";
-            using (XmlWriter writer = XmlWriter.Create("robot.xml",Settings))
-            {
-                //XmlWriterSettings writer.Settings = settings;
-                //writer.Settings.OmitXmlDeclaration=true;
-                //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
 
-                  //writer.WriteStartDocument();
-                    writer.WriteStartElement("Sen");
-                    writer.WriteAttributeString(null,"Type",null,"ImFree");
-                    writer.WriteElementString("EStr", "Message from RSI TestServer");
-                    writer.WriteElementString("Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"","");
-                    writer.WriteElementString(position,"");
-                    writer.WriteElementString("DiO","125");
-                    writer.WriteElementString("IPOC","398220");
-//                    writer.WriteElementString("Salary", employee.Salary.ToString());
-//
-                    //writer.WriteEndElement();
-//                }
-//
-                writer.WriteEndElement();
-                writer.WriteEndDocument();
-            }
-
-            string text;
-            var fileStream = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
-            using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-            {
-                text = streamReader.ReadToEnd();
-            }
-
-            buildconnect.Connect("127.0.0.1", text);
-            //192.168.2.100
-            fileStream.Close();
-        }
-
-    }
-
-    void OnApplicationQuit()
-    {
-        threadflag = false;
-        tid1.Join();
-        tid1.Abort();
-    }
     // Update is called once per frame
     void Update ()
 	{
