@@ -18,7 +18,8 @@ namespace KRCSimulator
     class Program
     {
         private const int targetPort = 59152;
-        private const String targetAddress = "192.168.2.200"; //"192.168.2.100";
+        private const String targetAddress = "192.168.2.200";
+        //private const String targetAddress = "127.0.0.1";
 
         private static double X = 331.7, Y = -1.2, Z = 852.0, A = -90.0, B = 0.9, C = -90.0;
         private static double sineValue;
@@ -31,28 +32,37 @@ namespace KRCSimulator
             Boolean done = false;
 
             Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            
             IPAddress send_to_address = IPAddress.Parse(targetAddress);
             IPEndPoint sending_end_point = new IPEndPoint(send_to_address, targetPort);
+            //UdpClient sender = new UdpClient();
+            //sender.ExclusiveAddressUse = false;
+            //sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            //sender.Client.Bind(sending_end_point);
 
             UdpClient listener = new UdpClient(targetPort);
-            listener.Client.ReceiveTimeout = 4; // in milliseconds
+            //listener.ExclusiveAddressUse = false;
+            //listener.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            listener.Client.ReceiveTimeout = 1000; // in milliseconds
             IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
+            //listener.Client.Bind(sending_end_point);
+
             string received_data;
-            byte[] receive_byte_array;
+            byte[] receive_byte_array = new byte[2048];
 
             Console.WriteLine("Simulator started on port " + targetPort);
             int count = 10;
 
             while (!done)
             {
-                if (count < 0)
+                if (false)
                 {
                     done = true;
                 }
                 else
                 {
                     // Update internal values:
-                    timestamp = DateTime.Now.Second;
+                    timestamp = DateTime.Now.Millisecond;
                     sineValue = Math.Sin(DateTime.Now.Ticks * Math.PI / 20000000);
 
                     // Sample send message
@@ -129,6 +139,7 @@ namespace KRCSimulator
                     try
                     {
                         sending_socket.SendTo(send_buffer, sending_end_point);
+                        //sender.Send(send_buffer, send_buffer.Length, sending_end_point);
                     }
                     catch (Exception send_exception)
                     {
