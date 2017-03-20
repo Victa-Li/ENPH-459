@@ -18,7 +18,9 @@ namespace KRCSimulator
     class Program
     {
         private const int targetPort = 59152;
+        private const int myPort = 55566;
         private const String targetAddress = "192.168.2.200";
+        //private const String targetAddress = "206.87.211.245";
         //private const String targetAddress = "127.0.0.1";
 
         private static double X = 331.7, Y = -1.2, Z = 852.0, A = -90.0, B = 0.9, C = -90.0;
@@ -30,9 +32,9 @@ namespace KRCSimulator
         static void Main(string[] args)
         {
             Boolean done = false;
+            UdpClient udpServer = new UdpClient(myPort);
+            //Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
-            Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-            
             IPAddress send_to_address = IPAddress.Parse(targetAddress);
             IPEndPoint sending_end_point = new IPEndPoint(send_to_address, targetPort);
             //UdpClient sender = new UdpClient();
@@ -40,11 +42,11 @@ namespace KRCSimulator
             //sender.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
             //sender.Client.Bind(sending_end_point);
 
-            UdpClient listener = new UdpClient(targetPort);
+            
             //listener.ExclusiveAddressUse = false;
             //listener.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-            listener.Client.ReceiveTimeout = 1000; // in milliseconds
-            IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
+            udpServer.Client.ReceiveTimeout = 1000; // in milliseconds
+            //IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
             //listener.Client.Bind(sending_end_point);
 
             string received_data;
@@ -138,8 +140,8 @@ namespace KRCSimulator
                     sending_end_point.ToString());
                     try
                     {
-                        sending_socket.SendTo(send_buffer, sending_end_point);
-                        //sender.Send(send_buffer, send_buffer.Length, sending_end_point);
+                        //sending_socket.SendTo(send_buffer, sending_end_point);
+                        udpServer.Send(send_buffer, send_buffer.Length, sending_end_point);
                     }
                     catch (Exception send_exception)
                     {
@@ -151,8 +153,8 @@ namespace KRCSimulator
                     try
                     {
                         Console.WriteLine("Waiting for reply");
-                        receive_byte_array = listener.Receive(ref receiving_end_point);
-                        Console.WriteLine("Received from {0}", receiving_end_point.ToString());
+                        receive_byte_array = udpServer.Receive(ref sending_end_point);
+                        Console.WriteLine("Received from {0}", sending_end_point.ToString());
                         received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
                         Console.WriteLine("data follows \n\n{0}\n", received_data);
 
@@ -178,7 +180,7 @@ namespace KRCSimulator
                 count--;
             } // end of while (!done)
 
-            listener.Close();
+            udpServer.Close();
 
             Console.WriteLine("Done. Press enter to continue...");
             Console.ReadLine();
