@@ -176,7 +176,7 @@ namespace KRCSimulator
                         break;
                     }
                 }
-                //System.Threading.Thread.Sleep(500);
+                System.Threading.Thread.Sleep(1);
                 count--;
             } // end of while (!done)
 
