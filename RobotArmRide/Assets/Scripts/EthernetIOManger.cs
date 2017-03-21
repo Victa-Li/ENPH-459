@@ -17,7 +17,8 @@ public class Utf8StringWriter : StringWriter
 
 public class EthernetIOManger : MonoBehaviour
 {
-    private int targetPort = 0;
+    //private int targetPort = 0;
+    private const int maxRetries = 100;
     private const int myPort = 59152;
     private const String targetAddress = "192.168.2.100";
 
@@ -30,6 +31,7 @@ public class EthernetIOManger : MonoBehaviour
         robotArm = GameObject.Find("Robot Arm").GetComponent<RobotArmControl>();
         threadflag = true;
         tid1 = new Thread(Thread1);
+        tid1.Priority = System.Threading.ThreadPriority.Highest;
         tid1.Start();
     }
 
@@ -41,25 +43,44 @@ public class EthernetIOManger : MonoBehaviour
 
     public void Thread1()
     {
-        Boolean done = false;
-        Boolean exception_thrown = false;
-
+        Debug.Log("Thread started");
         //Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
         IPAddress send_to_address = IPAddress.Parse(targetAddress);
-        IPEndPoint sending_end_point = new IPEndPoint(send_to_address, targetPort);
+        IPEndPoint sending_end_point = new IPEndPoint(send_to_address, 0);
 
         UdpClient udpServer = new UdpClient(myPort);
-        udpServer.Client.ReceiveTimeout = 4; // in milliseconds
+        udpServer.Client.ReceiveTimeout = 5; // in milliseconds
         //IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
         string received_data;
         byte[] receive_byte_array;
 
-        Console.WriteLine("Simulator started on port " + targetPort);
+        Debug.Log("Listening on port " + sending_end_point.Port);
+
+        // Console.WriteLine("Sending to: {0}",
+        //    sending_end_point.ToString());
+        
+        int count = 0;
+        // Read reply:
+
+        while (udpServer.Available == 0 && threadflag)
+        {  }
+        
+        try
+        {
+            receive_byte_array = udpServer.Receive(ref sending_end_point);
+            Debug.Log("received");
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e.ToString());
+        }
 
         XmlWriterSettings Settings = new XmlWriterSettings();
         Settings.OmitXmlDeclaration = true;
         Settings.ConformanceLevel = ConformanceLevel.Fragment;
         Settings.NewLineOnAttributes = true;
+        Settings.Indent = true;
+        Settings.IndentChars = "";
         String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
                             "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
                             "\"";
@@ -68,6 +89,7 @@ public class EthernetIOManger : MonoBehaviour
         {
             using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, Settings))
             {
+                
                 //XmlWriterSettings writer.Settings = settings;
                 //writer.Settings.OmitXmlDeclaration=true;
                 //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
@@ -89,63 +111,40 @@ public class EthernetIOManger : MonoBehaviour
                 //
                 xmlWriter.WriteEndElement();
             }
-            text = textWriter.ToString();    
+            text = textWriter.ToString();
         }
 
-        // Console.WriteLine("Sending to: {0}",
-        //    sending_end_point.ToString());
         byte[] send_buffer = Encoding.ASCII.GetBytes(text);
-        Debug.Log("waiting");
-        int count = 0;
-        // Read reply:
 
-        while (udpServer.Available == 0 && threadflag)
-        {  }
-   
-        try
-        {
-            receive_byte_array = udpServer.Receive(ref sending_end_point);
-            Debug.Log("received");
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.ToString());
-        }
-        
         try
         {
             udpServer.Send(send_buffer, send_buffer.Length, sending_end_point);
         //sending_socket.SendTo(send_buffer, sending_end_point);
         }
-        catch (Exception send_exception)
+        catch (Exception e)
         {
-            exception_thrown = true;
-            Console.WriteLine(send_exception.ToString());
-            //Assert.IsTrue(exception_thrown);
-
+            Debug.LogError(e.ToString());
         }
 
         do
         {
-                
+
             try
             {
-                Console.WriteLine("Waiting for reply");
+                //Console.WriteLine("Waiting for reply");
                 receive_byte_array = udpServer.Receive(ref sending_end_point);
-                Console.WriteLine("Received from {0}", sending_end_point.ToString());
+                //Console.WriteLine("Received from {0}", sending_end_point.ToString());
                 received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
-                Console.WriteLine("data follows \n\n{0}\n", received_data);
+                //Console.WriteLine("data follows \n\n{0}\n", received_data);
                 count = 0;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
-                //break;
+                Debug.LogWarning("Failed to recieve packet!");
                 count++;
                 continue;
-                        
             }
-                
+
             try
             {
                 String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
@@ -179,19 +178,17 @@ public class EthernetIOManger : MonoBehaviour
                     }
                     text1 = textWriter.ToString();
                 }
-                Console.WriteLine("Sending to: {0}",
-                    sending_end_point.ToString());
+                Debug.Log("Sending to: " + sending_end_point.ToString());
                 byte[] send_buffer1 = Encoding.ASCII.GetBytes(text1);
                 udpServer.Send(send_buffer1, send_buffer1.Length, sending_end_point);
                 //sending_socket.SendTo(send_buffer1, sending_end_point);
             }
-            catch (Exception send_exception)
+            catch (Exception e)
             {
-                exception_thrown = true;
-                Console.WriteLine(send_exception.ToString());
+                Debug.LogError(e.ToString());
                 count++;
             }
-        } while (count<100 && threadflag);
+        } while (count < maxRetries && threadflag);
 
         
         //buildconnect.Connect("127.0.0.1", text);
