@@ -7,6 +7,14 @@ using System.Threading;
 using System.Xml;
 using UnityEngine;
 
+public class Utf8StringWriter : StringWriter
+{
+    public override Encoding Encoding
+    {
+        get { return Encoding.UTF8; }
+    }
+}
+
 public class EthernetIOManger : MonoBehaviour
 {
     private int targetPort = 0;
@@ -55,38 +63,35 @@ public class EthernetIOManger : MonoBehaviour
         String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
                             "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
                             "\"";
-        using (XmlWriter writer = XmlWriter.Create("robot.xml", Settings))
+        string text;
+        using (TextWriter textWriter = new Utf8StringWriter())
         {
-            //XmlWriterSettings writer.Settings = settings;
-            //writer.Settings.OmitXmlDeclaration=true;
-            //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
+            using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, Settings))
+            {
+                //XmlWriterSettings writer.Settings = settings;
+                //writer.Settings.OmitXmlDeclaration=true;
+                //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
 
-            //writer.WriteStartDocument();
-            writer.WriteStartElement("Sen");
-            writer.WriteAttributeString(null, "Type", null, "ImFree");
-            writer.WriteElementString("EStr", "Message from RSI TestServer");
-            writer.WriteElementString(
+                //writer.WriteStartDocument();
+                xmlWriter.WriteStartElement("Sen");
+                xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
+                xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
+                xmlWriter.WriteElementString(
                 "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                 "");
-            writer.WriteElementString(position, "");
-            writer.WriteElementString("TestOutput", "1");
-            writer.WriteElementString("IPOC", "398220");
-            //                    writer.WriteElementString("Salary", employee.Salary.ToString());
-            //
-            //writer.WriteEndElement();
-            //                }
-            //
-            writer.WriteEndElement();
-            writer.WriteEndDocument();
+                xmlWriter.WriteElementString(position, "");
+                xmlWriter.WriteElementString("TestOutput", "1");
+                xmlWriter.WriteElementString("IPOC", "398220");
+                //                    writer.WriteElementString("Salary", employee.Salary.ToString());
+                //
+                //xmlWriter.WriteEndElement();
+                //                }
+                //
+                xmlWriter.WriteEndElement();
+            }
+            text = textWriter.ToString();    
         }
 
-        string text;
-        var fileStream = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
-        using (var streamReader = new StreamReader(fileStream, Encoding.UTF8))
-        {
-            text = streamReader.ReadToEnd();
-        }
-        fileStream.Close();
         // Console.WriteLine("Sending to: {0}",
         //    sending_end_point.ToString());
         byte[] send_buffer = Encoding.ASCII.GetBytes(text);
@@ -123,61 +128,57 @@ public class EthernetIOManger : MonoBehaviour
         do
         {
                 
-                try
-                {
-                    Console.WriteLine("Waiting for reply");
-                    receive_byte_array = udpServer.Receive(ref sending_end_point);
-                    Console.WriteLine("Received from {0}", sending_end_point.ToString());
-                    received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
-                    Console.WriteLine("data follows \n\n{0}\n", received_data);
-                    count = 0;
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                    //break;
-                    count++;
-                    continue;
+            try
+            {
+                Console.WriteLine("Waiting for reply");
+                receive_byte_array = udpServer.Receive(ref sending_end_point);
+                Console.WriteLine("Received from {0}", sending_end_point.ToString());
+                received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
+                Console.WriteLine("data follows \n\n{0}\n", received_data);
+                count = 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                //break;
+                count++;
+                continue;
                         
-                }
+            }
                 
             try
             {
                 String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
                         "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
                         "\"";
-                using (XmlWriter writer = XmlWriter.Create("robot.xml", Settings))
-                {
-                    //XmlWriterSettings writer.Settings = settings;
-                    //writer.Settings.OmitXmlDeclaration=true;
-                    //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
-
-                    //writer.WriteStartDocument();
-                    writer.WriteStartElement("Sen");
-                    writer.WriteAttributeString(null, "Type", null, "ImFree");
-                    writer.WriteElementString("EStr", "Message from RSI TestServer");
-                    writer.WriteElementString(
-                        "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
-                        "");
-                    writer.WriteElementString(position1, "");
-                    writer.WriteElementString("TestOutput", "1");
-                    writer.WriteElementString("IPOC", "398220");
-                    //                    writer.WriteElementString("Salary", employee.Salary.ToString());
-                    //
-                    //writer.WriteEndElement();
-                    //                }
-                    //
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
-                }
-
                 string text1;
-                var fileStream1 = new FileStream("robot.xml", FileMode.Open, FileAccess.Read);
-                using (var streamReader = new StreamReader(fileStream1, Encoding.UTF8))
+                using (TextWriter textWriter = new Utf8StringWriter())
                 {
-                    text1 = streamReader.ReadToEnd();
+                    using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, Settings))
+                    {
+                        //XmlWriterSettings writer.Settings = settings;
+                        //writer.Settings.OmitXmlDeclaration=true;
+                        //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
+
+                        //writer.WriteStartDocument();
+                        xmlWriter.WriteStartElement("Sen");
+                        xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
+                        xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
+                        xmlWriter.WriteElementString(
+                            "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
+                            "");
+                        xmlWriter.WriteElementString(position1, "");
+                        xmlWriter.WriteElementString("TestOutput", "1");
+                        xmlWriter.WriteElementString("IPOC", "398220");
+                        //                    writer.WriteElementString("Salary", employee.Salary.ToString());
+                        //
+                        //writer.WriteEndElement();
+                        //                }
+                        //
+                        xmlWriter.WriteEndElement();
+                    }
+                    text1 = textWriter.ToString();
                 }
-                fileStream.Close();
                 Console.WriteLine("Sending to: {0}",
                     sending_end_point.ToString());
                 byte[] send_buffer1 = Encoding.ASCII.GetBytes(text1);
