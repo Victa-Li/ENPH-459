@@ -1,13 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
-using System.Xml.Serialization;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Xml;
-using Assets.Scripts;
-using UnityEngine.Assertions;
+﻿using UnityEngine;
 
 public class RobotArmControl : MonoBehaviour {
 
