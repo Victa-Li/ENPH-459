@@ -15,8 +15,8 @@ public class EthernetIOManger : MonoBehaviour
 {
 
     private const int targetPort = 59152;
-    private const String targetAddress = "192.168.2.100";
-
+    //private const String targetAddress = "192.168.2.100";
+    private const String targetAddress = "127.0.0.1";
     private int myport = 59152;
 
     private Thread tid1;
@@ -155,8 +155,9 @@ public class EthernetIOManger : MonoBehaviour
                         continue;
                         
                     }
-                
-                try
+            string[] stringSeparators = new string[] { "<IPOC>", "</IPOC>" };
+            string[] IPOC = received_data.Split(stringSeparators, StringSplitOptions.None);
+            try
                 {
                 String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
                        "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
@@ -176,7 +177,8 @@ public class EthernetIOManger : MonoBehaviour
                         "");
                     writer.WriteElementString(position1, "");
                     writer.WriteElementString("TestOutput", "1");
-                    writer.WriteElementString("IPOC", "398220");
+                    //writer.WriteElementString("IPOC", "398220");
+                    writer.WriteElementString("IPOC", IPOC[1]);
                     //                    writer.WriteElementString("Salary", employee.Salary.ToString());
                     //
                     //writer.WriteEndElement();
