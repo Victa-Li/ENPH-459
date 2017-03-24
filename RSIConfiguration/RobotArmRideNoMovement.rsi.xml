@@ -14,26 +14,6 @@
       <Parameter Name="Period" ParamID="4" ParamValue="4" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="POSCORR" ObjTypeID="27" ObjID="POSCORR1">
-    <Inputs>
-      <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="1" />
-      <Input InIdx="2" OutObjID="ETHERNET1" OutIdx="2" />
-      <Input InIdx="3" OutObjID="ETHERNET1" OutIdx="3" />
-      <Input InIdx="4" OutObjID="ETHERNET1" OutIdx="4" />
-      <Input InIdx="5" OutObjID="ETHERNET1" OutIdx="5" />
-      <Input InIdx="6" OutObjID="ETHERNET1" OutIdx="6" />
-    </Inputs>
-    <Parameters>
-      <Parameter Name="LowerLimX" ParamID="1" ParamValue="-200" />
-      <Parameter Name="LowerLimY" ParamID="2" ParamValue="-200" />
-      <Parameter Name="LowerLimZ" ParamID="3" ParamValue="-200" />
-      <Parameter Name="UpperLimX" ParamID="4" ParamValue="200" />
-      <Parameter Name="UpperLimY" ParamID="5" ParamValue="200" />
-      <Parameter Name="UpperLimZ" ParamID="6" ParamValue="200" />
-      <Parameter Name="MaxRotAngle" ParamID="7" ParamValue="30" />
-      <Parameter Name="RefCorrSys" ParamID="1" ParamValue="1" IsRuntime="false" />
-    </Parameters>
-  </RSIObject>
   <RSIObject ObjType="MAP2SEN_PREA" ObjTypeID="17" ObjID="MAP2SEN_PREA1">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="1" />

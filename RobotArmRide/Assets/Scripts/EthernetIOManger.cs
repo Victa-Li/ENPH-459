@@ -21,6 +21,7 @@ public class EthernetIOManger : MonoBehaviour
     private const int maxRetries = 100;
     private const int myPort = 59152;
     private const String targetAddress = "192.168.2.100";
+    private string timestamp;
 
     private Thread tid1;
     private bool threadflag;
@@ -49,7 +50,7 @@ public class EthernetIOManger : MonoBehaviour
         IPEndPoint sending_end_point = new IPEndPoint(send_to_address, 0);
 
         UdpClient udpServer = new UdpClient(myPort);
-        udpServer.Client.ReceiveTimeout = 5; // in milliseconds
+        udpServer.Client.ReceiveTimeout = 10; // in milliseconds
         //IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
         string received_data;
         byte[] receive_byte_array;
@@ -64,10 +65,17 @@ public class EthernetIOManger : MonoBehaviour
 
         while (udpServer.Available == 0 && threadflag)
         {  }
-        
+
+        string[] stringSeparators = new string[] { "<IPOC>", "</IPOC>" };
+
         try
         {
             receive_byte_array = udpServer.Receive(ref sending_end_point);
+            received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
+            
+            string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
+            timestamp = temp[1];
+
             Debug.Log("received");
         }
         catch (Exception e)
@@ -81,9 +89,10 @@ public class EthernetIOManger : MonoBehaviour
         Settings.NewLineOnAttributes = true;
         Settings.Indent = true;
         Settings.IndentChars = "";
-        String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
-                            "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
-                            "\"";
+        String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
+                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+                        //"\" A=\"" + 0.0 + "\" B=\"" + 0.0 + "\" C=\"" + 0.0 +
+                        "\"";
         string text;
         using (TextWriter textWriter = new Utf8StringWriter())
         {
@@ -103,7 +112,7 @@ public class EthernetIOManger : MonoBehaviour
                 "");
                 xmlWriter.WriteElementString(position, "");
                 xmlWriter.WriteElementString("TestOutput", "1");
-                xmlWriter.WriteElementString("IPOC", "398220");
+                xmlWriter.WriteElementString("IPOC", timestamp);
                 //                    writer.WriteElementString("Salary", employee.Salary.ToString());
                 //
                 //xmlWriter.WriteEndElement();
@@ -137,6 +146,8 @@ public class EthernetIOManger : MonoBehaviour
                 received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
                 //Console.WriteLine("data follows \n\n{0}\n", received_data);
                 count = 0;
+                string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
+                timestamp = temp[1];
             }
             catch (Exception e)
             {
@@ -147,8 +158,11 @@ public class EthernetIOManger : MonoBehaviour
 
             try
             {
-                String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_y + "\" Z=\"" + robotArm.RA_z +
-                        "\" A=\"" + robotArm.RA_pitch + "\" B=\"" + robotArm.RA_roll + "\" C=\"" + robotArm.RA_yaw +
+
+                String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
+                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+                        //"\" A=\"" + (109.12) + "\" B=\"" + (90) + "\" C=\"" + (180) +
+                        //"\" A=\"" + 0.0 + "\" B=\"" + 0.0 + "\" C=\"" + 0.0 +
                         "\"";
                 string text1;
                 using (TextWriter textWriter = new Utf8StringWriter())
@@ -168,7 +182,7 @@ public class EthernetIOManger : MonoBehaviour
                             "");
                         xmlWriter.WriteElementString(position1, "");
                         xmlWriter.WriteElementString("TestOutput", "1");
-                        xmlWriter.WriteElementString("IPOC", "398220");
+                        xmlWriter.WriteElementString("IPOC", timestamp);
                         //                    writer.WriteElementString("Salary", employee.Salary.ToString());
                         //
                         //writer.WriteEndElement();
@@ -188,7 +202,7 @@ public class EthernetIOManger : MonoBehaviour
                 Debug.LogError(e.ToString());
                 count++;
             }
-        } while (count < maxRetries && threadflag);
+        } while (threadflag);
 
         
         //buildconnect.Connect("127.0.0.1", text);
