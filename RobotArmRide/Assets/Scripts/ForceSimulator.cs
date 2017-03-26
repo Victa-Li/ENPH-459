@@ -27,8 +27,7 @@ public class ForceSimulator : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		initialPosition = transform.position;
-		//mc = GameObject.FindGameObjectWithTag ("Player").GetComponent<MovementController>();
-		//g = Physics.gravity.magnitude;
+		
 	}
 	
 	// Update is called once per frame
@@ -49,29 +48,12 @@ public class ForceSimulator : MonoBehaviour {
         if (localAccel.z < -accelerationLimit.z)
             localAccel.z = -accelerationLimit.z;
 
-        // Acceleration Mapping
-        //pitch = -Mathf.Rad2Deg * Mathf.Atan2 (localAccel.z, g);
-        //roll = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, g);
-        //yaw = Mathf.Rad2Deg * Mathf.Atan2 (localAccel.x, transform.localPosition.z);
-
         AM_RF = Physics.gravity.magnitude / (mc.acceleration * exaggeration + Physics.gravity).magnitude;
-        //Quaternion AM_rotation = Quaternion.Euler (exaggeration * pitch, 0.0f, exaggeration * roll);
-        // Testing a better rotation method:
+
         Vector3 AM_from = Physics.gravity;
         Vector3 AM_to = Physics.gravity + new Vector3( localAccel.z, 0, -localAccel.x);
         Quaternion AM_rotation = Quaternion.FromToRotation(AM_from, AM_to);
-        // Impulse simulation
-
-        // Small
-
-
-        // Large
-
-
-        // Rotation
-
-
-        // Set transform
+        
         transform.position = initialPosition;
         Vector3 temp = mc.transform.rotation.eulerAngles;
         Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));

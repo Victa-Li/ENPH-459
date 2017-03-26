@@ -45,9 +45,7 @@ public class RobotArmControl : MonoBehaviour {
     void Start () {
         
         Debug.Log("inside start");
-        //serializer = new XmlSerializer(typeof(CarObject));
-       // stream = new FileStream("robot.xml", FileMode.OpenOrCreate);
-        //writer = new StreamWriter("robot.xml");
+        
         Transform[] RA_parts = GetComponentsInChildren<Transform> ();
 		for (int i = 0; i < RA_parts.Length; i++) {
 			if (RA_parts[i].name == "base")
@@ -78,8 +76,8 @@ public class RobotArmControl : MonoBehaviour {
 		    && RobotArm_seat != null) {
 
 			RA_complete = true;
-			//sbaScript = GameObject.FindGameObjectWithTag ("AccelerationController").GetComponent<scaleByAcceleration>();
-		} else {
+
+        } else {
 			Debug.LogError ("Robot arm not initialized!");
 		}
 
@@ -93,9 +91,6 @@ public class RobotArmControl : MonoBehaviour {
     // Update is called once per frame
     void Update ()
 	{
-        //Debug.Log("ini update");
-
-	    //tid1.Join();
        
 
 
@@ -105,11 +100,8 @@ public class RobotArmControl : MonoBehaviour {
       
 		if (RA_complete) {
 
-			//setAxes (sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.z * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f);
-			setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
+				setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
 			setAxes (axis_base, axis_lower, axis_upper, axis_wrist, axis_seat);
-
-			// Fix axes to go from 0 to 360 and centred at 90:
 
 			if (axis_seat < 180.0f)
 				axis_seat += 360.0f;
@@ -141,8 +133,6 @@ public class RobotArmControl : MonoBehaviour {
 		RobotArm_lower_arm.transform.localRotation = Quaternion.AngleAxis (set_lower, localForward);
         RobotArm_upper_arm_back.transform.localPosition = segment2;
         RobotArm_upper_arm_back.transform.localRotation = Quaternion.AngleAxis (set_upper, localForward);
-        // RobotArm_upper_arm_front.transform.localPosition = segmentX;
-        // RobotArm_upper_arm_front.transform.localRotation = Quaternion.AngleAxis(set_upperX, localForward);
         RobotArm_wrist_peice.transform.localPosition = segment3;
 		RobotArm_wrist_peice.transform.localRotation =  Quaternion.AngleAxis (180 - set_wrist, localForward);
 		RobotArm_seat.transform.localPosition = segment4;

@@ -45,20 +45,18 @@ public class EthernetIOManger : MonoBehaviour
     public void Thread1()
     {
         Debug.Log("Thread started");
-        //Socket sending_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+        
         IPAddress send_to_address = IPAddress.Parse(targetAddress);
         IPEndPoint sending_end_point = new IPEndPoint(send_to_address, 0);
 
         UdpClient udpServer = new UdpClient(myPort);
         udpServer.Client.ReceiveTimeout = 10; // in milliseconds
-        //IPEndPoint receiving_end_point = new IPEndPoint(IPAddress.Any, targetPort);
+        
         string received_data;
         byte[] receive_byte_array;
 
         Debug.Log("Listening on port " + sending_end_point.Port);
 
-        // Console.WriteLine("Sending to: {0}",
-        //    sending_end_point.ToString());
         
         int count = 0;
         // Read reply:
@@ -91,19 +89,13 @@ public class EthernetIOManger : MonoBehaviour
         Settings.IndentChars = "";
         String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
                         "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
-                        //"\" A=\"" + 0.0 + "\" B=\"" + 0.0 + "\" C=\"" + 0.0 +
                         "\"";
         string text;
         using (TextWriter textWriter = new Utf8StringWriter())
         {
             using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, Settings))
             {
-                
-                //XmlWriterSettings writer.Settings = settings;
-                //writer.Settings.OmitXmlDeclaration=true;
-                //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
-
-                //writer.WriteStartDocument();
+           
                 xmlWriter.WriteStartElement("Sen");
                 xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
                 xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
@@ -113,11 +105,7 @@ public class EthernetIOManger : MonoBehaviour
                 xmlWriter.WriteElementString(position, "");
                 xmlWriter.WriteElementString("TestOutput", "1");
                 xmlWriter.WriteElementString("IPOC", timestamp);
-                //                    writer.WriteElementString("Salary", employee.Salary.ToString());
-                //
-                //xmlWriter.WriteEndElement();
-                //                }
-                //
+                
                 xmlWriter.WriteEndElement();
             }
             text = textWriter.ToString();
@@ -128,7 +116,7 @@ public class EthernetIOManger : MonoBehaviour
         try
         {
             udpServer.Send(send_buffer, send_buffer.Length, sending_end_point);
-        //sending_socket.SendTo(send_buffer, sending_end_point);
+        
         }
         catch (Exception e)
         {
@@ -140,11 +128,11 @@ public class EthernetIOManger : MonoBehaviour
 
             try
             {
-                //Console.WriteLine("Waiting for reply");
+                
                 receive_byte_array = udpServer.Receive(ref sending_end_point);
-                //Console.WriteLine("Received from {0}", sending_end_point.ToString());
+                
                 received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
-                //Console.WriteLine("data follows \n\n{0}\n", received_data);
+                
                 count = 0;
                 string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
                 timestamp = temp[1];
@@ -161,19 +149,12 @@ public class EthernetIOManger : MonoBehaviour
 
                 String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
                         "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
-                        //"\" A=\"" + (109.12) + "\" B=\"" + (90) + "\" C=\"" + (180) +
-                        //"\" A=\"" + 0.0 + "\" B=\"" + 0.0 + "\" C=\"" + 0.0 +
                         "\"";
                 string text1;
                 using (TextWriter textWriter = new Utf8StringWriter())
                 {
                     using (XmlWriter xmlWriter = XmlWriter.Create(textWriter, Settings))
                     {
-                        //XmlWriterSettings writer.Settings = settings;
-                        //writer.Settings.OmitXmlDeclaration=true;
-                        //writer.Settings.ConformanceLevel=ConformanceLevel.Fragment;
-
-                        //writer.WriteStartDocument();
                         xmlWriter.WriteStartElement("Sen");
                         xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
                         xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
@@ -183,11 +164,7 @@ public class EthernetIOManger : MonoBehaviour
                         xmlWriter.WriteElementString(position1, "");
                         xmlWriter.WriteElementString("TestOutput", "1");
                         xmlWriter.WriteElementString("IPOC", timestamp);
-                        //                    writer.WriteElementString("Salary", employee.Salary.ToString());
-                        //
-                        //writer.WriteEndElement();
-                        //                }
-                        //
+                      
                         xmlWriter.WriteEndElement();
                     }
                     text1 = textWriter.ToString();
@@ -195,7 +172,7 @@ public class EthernetIOManger : MonoBehaviour
                 Debug.Log("Sending to: " + sending_end_point.ToString());
                 byte[] send_buffer1 = Encoding.ASCII.GetBytes(text1);
                 udpServer.Send(send_buffer1, send_buffer1.Length, sending_end_point);
-                //sending_socket.SendTo(send_buffer1, sending_end_point);
+               
             }
             catch (Exception e)
             {
@@ -204,9 +181,7 @@ public class EthernetIOManger : MonoBehaviour
             }
         } while (threadflag);
 
-        
-        //buildconnect.Connect("127.0.0.1", text);
-        //192.168.2.100
+   
 
         udpServer.Close();
 
