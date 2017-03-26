@@ -8,6 +8,7 @@ public class UITextUpdater : MonoBehaviour {
     public Text targetVectorText;
     public MovementController mc;
     public ForceSimulator fs;
+    //public EthernetIOManger connect;
 	// Use this for initialization
 	void Start () {
 		
@@ -23,7 +24,9 @@ public class UITextUpdater : MonoBehaviour {
             "Seat Accel:    " + string.Format("{0:0.00}", fs.seatAccel.x) + ", "
             + string.Format("{0:0.00}", fs.seatAccel.y) + ", " + string.Format("{0:0.00}", fs.seatAccel.z) + "\n" +
             "Total Accel:   " + string.Format("{0:0.00}", fs.seatAccel.x+fs.feltAccel.x) + ", "
-            + string.Format("{0:0.00}", fs.seatAccel.y+fs.feltAccel.y) + ", " + string.Format("{0:0.00}", fs.seatAccel.z+fs.seatAccel.z);
+            + string.Format("{0:0.00}", fs.seatAccel.y+fs.feltAccel.y) + ", " + string.Format("{0:0.00}", fs.seatAccel.z+fs.seatAccel.z)+"\n"
+            + "output(receive):   "+ string.Format(EthernetIOManger.testoutput)+"\n"
+            + "output(send):   " + string.Format(EthernetIOManger.testsend);
 
     }
 }

@@ -72,4 +72,16 @@ public class MovementController : MonoBehaviour {
 		pm.transform.position = initPlayerPos;
         pm.transform.rotation = initPlayerRot;
     }
+
+    public void settestoutput()
+    {
+        if (EthernetIOManger.testsend.Equals("0"))
+        {
+            EthernetIOManger.testsend = "1";
+        }
+        else
+        {
+            EthernetIOManger.testsend = "0";
+        }
+    }
 }

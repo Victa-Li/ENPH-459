@@ -26,11 +26,15 @@ public class EthernetIOManger : MonoBehaviour
     private Thread tid1;
     private bool threadflag;
     RobotArmControl robotArm;
+    public static string testoutput;
+    public static string testsend;
     // Use this for initialization
     void Start()
     {
         robotArm = GameObject.Find("Robot Arm").GetComponent<RobotArmControl>();
         threadflag = true;
+        testoutput = "0";
+        testsend = "0";
         tid1 = new Thread(Thread1);
         tid1.Priority = System.Threading.ThreadPriority.Highest;
         tid1.Start();
@@ -39,7 +43,7 @@ public class EthernetIOManger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void Thread1()
@@ -65,6 +69,7 @@ public class EthernetIOManger : MonoBehaviour
         {  }
 
         string[] stringSeparators = new string[] { "<IPOC>", "</IPOC>" };
+        string[] stringSeparators1 = new string[] { "<TestOutput>", "</TestOutput>" };
 
         try
         {
@@ -72,7 +77,9 @@ public class EthernetIOManger : MonoBehaviour
             received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
             
             string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
+            string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
             timestamp = temp[1];
+            testoutput = temp1[1];
 
             Debug.Log("received");
         }
@@ -103,7 +110,7 @@ public class EthernetIOManger : MonoBehaviour
                 "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                 "");
                 xmlWriter.WriteElementString(position, "");
-                xmlWriter.WriteElementString("TestOutput", "1");
+                xmlWriter.WriteElementString("TestOutput", testsend);
                 xmlWriter.WriteElementString("IPOC", timestamp);
                 
                 xmlWriter.WriteEndElement();
@@ -136,6 +143,8 @@ public class EthernetIOManger : MonoBehaviour
                 count = 0;
                 string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
                 timestamp = temp[1];
+                string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
+                testoutput = temp1[1];
             }
             catch (Exception e)
             {
@@ -162,7 +171,7 @@ public class EthernetIOManger : MonoBehaviour
                             "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                             "");
                         xmlWriter.WriteElementString(position1, "");
-                        xmlWriter.WriteElementString("TestOutput", "1");
+                        xmlWriter.WriteElementString("TestOutput", testsend);
                         xmlWriter.WriteElementString("IPOC", timestamp);
                       
                         xmlWriter.WriteEndElement();
