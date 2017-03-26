@@ -27,11 +27,11 @@ public class IOManager : MonoBehaviour {
 
 	public float exaggerationScale = 1.0f;
 
-	public int axis_base_trim = 0;
-	public int axis_lower_trim = 0;
-	public int axis_upper_trim = 0;
-	public int axis_wrist_trim = 0;
-	public int axis_seat_trim = 0;
+	public int axis_base_trim = 7;
+	public int axis_lower_trim = -26;
+	public int axis_upper_trim = 68;
+	public int axis_wrist_trim = -14;
+	public int axis_seat_trim = 37;
 
 	public int servo_base = 90;
 	public int servo_lower = 90;
