@@ -62,22 +62,7 @@ public class MovementController : MonoBehaviour {
         //velocity_r = linearVelocity - Vector3.Cross(angularVelocity, transform.position);
 
         acceleration = linearAcceleration;
-        /*
-        Vector3 dir;
-        float scale = 2f;
-        dir = new Vector3(angularVelocity.x, 0, 0);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.red);
-        dir = new Vector3(0, angularVelocity.y, 0);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.green);
-        dir = new Vector3(0, 0, angularVelocity.z);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.blue);
-        */
+      
         if (pm != null)
 			pm.MoverFixedUpdate ();
 	}

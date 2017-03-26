@@ -6,7 +6,7 @@ public class followPlayer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//playerObject = GameObject.FindGameObjectWithTag ("Player");
+		
 	}
 	
 	// Update is called once per frame
