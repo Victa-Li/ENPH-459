@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 
-
-
 public class ForceSimulator : MonoBehaviour {
 
 	public Vector3 testVector;
@@ -18,6 +16,13 @@ public class ForceSimulator : MonoBehaviour {
 
     public Target_helper target_helper;
     public Quaternion rotation_no_y;
+    
+    //
+    //TODO: change ethernet comms to use local public variables and lock those
+    //
+        
+    // Synchronization lock due to sharing of x, y, z, A, B, C values between unity main thread and ethernet communication thread
+    private Object pos_rot_Lock = new Object();
 
     //***************************************//
     //*** Acceleration Mapping Parameters ***//
@@ -129,7 +134,6 @@ public class ForceSimulator : MonoBehaviour {
         returnPosition = transform.position;
         rb = GetComponent<Rigidbody>();
         RobotArm = GetComponentInParent<RobotArmControl>();
-        
 	}
 	
 	void FixedUpdate () {
@@ -206,25 +210,23 @@ public class ForceSimulator : MonoBehaviour {
         float d_z = transform.position.z - returnPosition.z;
 
         if (Mathf.Abs(d_x) > ISverticalReturnSpeed / 2)
-            //    returnStep.x = -Mathf.Sign(d_x);
-            //else
             returnStep.x = Mathf.Lerp(-Mathf.Sign(d_x), 0, 0.5f);
         if (Mathf.Abs(d_y) > ISverticalReturnSpeed / 2)
-            //    returnStep.y = -Mathf.Sign(d_y);
-            //else
             returnStep.y = Mathf.Lerp(-Mathf.Sign(d_y), 0, 0.5f);
         if (Mathf.Abs(d_z) > ISverticalReturnSpeed / 2)
-            //    returnStep.z = -Mathf.Sign(d_z);
-            //else
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
-        transform.Translate(returnStep * ISverticalReturnSpeed);
 
-        //****************//
-        //*** Rotation ***//
-        //****************//
-        Vector3 temp = mc.transform.rotation.eulerAngles;
-        rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
-        transform.rotation = rotation_no_y * AM_rotation;
+        // Update position and rotation
+        lock (pos_rot_Lock)
+        {
+            transform.Translate(returnStep * ISverticalReturnSpeed);
+            //****************//
+            //*** Rotation ***//
+            //****************//
+            Vector3 temp = mc.transform.rotation.eulerAngles;
+            rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
+            transform.rotation = rotation_no_y * AM_rotation;
+        }
 
         // Calculate the expected "felt" acceleration:
         float h1 = (new Vector2(localAccel.x, localAccel.z)).magnitude;

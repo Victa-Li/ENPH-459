@@ -25,11 +25,10 @@ public class EthernetIOManger : MonoBehaviour
 
     private Thread tid1;
     private bool threadflag;
-    RobotArmControl robotArm;
+    public ForceSimulator fs;
     // Use this for initialization
     void Start()
     {
-        robotArm = GameObject.Find("Robot Arm").GetComponent<RobotArmControl>();
         threadflag = true;
         tid1 = new Thread(Thread1);
         tid1.Priority = System.Threading.ThreadPriority.Highest;
@@ -87,8 +86,8 @@ public class EthernetIOManger : MonoBehaviour
         Settings.NewLineOnAttributes = true;
         Settings.Indent = true;
         Settings.IndentChars = "";
-        String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
-                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+        String position = "RKorr X=\"" + fs.transform.position.x + "\" Y=\"" + fs.transform.position.z + "\" Z=\"" + fs.transform.position.y +
+                        "\" A=\"" + (fs.transform.eulerAngles.x) + "\" B=\"" + (fs.transform.eulerAngles.y) + "\" C=\"" + (fs.transform.eulerAngles.x) +
                         "\"";
         string text;
         using (TextWriter textWriter = new Utf8StringWriter())
@@ -137,7 +136,7 @@ public class EthernetIOManger : MonoBehaviour
                 string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
                 timestamp = temp[1];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.LogWarning("Failed to recieve packet!");
                 count++;
@@ -147,8 +146,8 @@ public class EthernetIOManger : MonoBehaviour
             try
             {
 
-                String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
-                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+                String position1 = "RKorr X=\"" + fs.transform.position.x + "\" Y=\"" + fs.transform.position.z + "\" Z=\"" + fs.transform.position.y +
+                        "\" A=\"" + (fs.transform.eulerAngles.x) + "\" B=\"" + (fs.transform.eulerAngles.y) + "\" C=\"" + (fs.transform.eulerAngles.x) +
                         "\"";
                 string text1;
                 using (TextWriter textWriter = new Utf8StringWriter())
