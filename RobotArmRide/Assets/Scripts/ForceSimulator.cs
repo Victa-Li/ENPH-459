@@ -14,6 +14,10 @@ public class ForceSimulator : MonoBehaviour {
 
     public Vector3 feltAccel;
     public Vector3 seatAccel;
+    public Vector3 seatAccet_rotFrame; // Seat acceleration in the rotated frame due to orientation of the car
+
+    public Target_helper target_helper;
+    public Quaternion rotation_no_y;
 
     //***************************************//
     //*** Acceleration Mapping Parameters ***//
@@ -182,6 +186,7 @@ public class ForceSimulator : MonoBehaviour {
             localAccel.z = accelerationLimit.z;
         if (localAccel.z < -accelerationLimit.z)
             localAccel.z = -accelerationLimit.z;
+
         //****************************//
         //*** Acceleration Mapping ***//
         //****************************//
@@ -193,7 +198,7 @@ public class ForceSimulator : MonoBehaviour {
         //*** Impulse simulation up-down ***//
         //**********************************//
         if (Mathf.Abs(localAccel.y) > ISverticalThreshold)
-            rb.AddForce(transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
+            rb.AddForce(target_helper.transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
         
         Vector3 returnStep = Vector3.zero;
         float d_x = transform.position.x - returnPosition.x;
@@ -213,11 +218,12 @@ public class ForceSimulator : MonoBehaviour {
             //else
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
         transform.Translate(returnStep * ISverticalReturnSpeed);
+
         //****************//
         //*** Rotation ***//
         //****************//
         Vector3 temp = mc.transform.rotation.eulerAngles;
-        Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
+        rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
         transform.rotation = rotation_no_y * AM_rotation;
 
         // Calculate the expected "felt" acceleration:
@@ -225,6 +231,7 @@ public class ForceSimulator : MonoBehaviour {
         float h2 = (new Vector2(h1, Physics.gravity.magnitude)).magnitude;
         feltAccel = new Vector3(localAccel.x, 0, localAccel.z) / h2 * Physics.gravity.magnitude;
         LinearAcceleration(out seatAccel, transform.position, seatAccelSamples);
+
 
         testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);
 	}
