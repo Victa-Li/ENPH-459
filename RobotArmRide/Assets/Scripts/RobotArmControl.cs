@@ -35,12 +35,18 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
+    
+    //StreamWriter writer = new StreamWriter("robot.xml");
 
-	//private scaleByAcceleration sbaScript;
 
-	// Use this for initialization
-	void Start () {
-		Transform[] RA_parts = GetComponentsInChildren<Transform> ();
+    //private scaleByAcceleration sbaScript;
+
+    // Use this for initialization
+    void Start () {
+        
+        Debug.Log("inside start");
+        
+        Transform[] RA_parts = GetComponentsInChildren<Transform> ();
 		for (int i = 0; i < RA_parts.Length; i++) {
 			if (RA_parts[i].name == "base")
 				RobotArm_base = RA_parts [i].gameObject;
@@ -56,9 +62,12 @@ public class RobotArmControl : MonoBehaviour {
 				RobotArm_wrist_peice = RA_parts [i].gameObject;
 			else if (RA_parts[i].name == "seat")
 				RobotArm_seat = RA_parts[i].gameObject;
+            
 			
 		}
-		if (RobotArm_base != null
+
+       
+        if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
 		    && RobotArm_lower_arm != null
 		    && RobotArm_upper_arm_back != null
@@ -67,25 +76,32 @@ public class RobotArmControl : MonoBehaviour {
 		    && RobotArm_seat != null) {
 
 			RA_complete = true;
-			//sbaScript = GameObject.FindGameObjectWithTag ("AccelerationController").GetComponent<scaleByAcceleration>();
-		} else {
+
+        } else {
 			Debug.LogError ("Robot arm not initialized!");
 		}
-	}
-	
-	// Update is called once per frame
-	void Update () {
+
+
+
 
 	}
 
-	void FixedUpdate() {
+
+
+    // Update is called once per frame
+    void Update ()
+	{
+       
+
+
+	}
+
+    void FixedUpdate() {
+      
 		if (RA_complete) {
 
-			//setAxes (sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.z * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f);
-			setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
+				setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
 			setAxes (axis_base, axis_lower, axis_upper, axis_wrist, axis_seat);
-
-			// Fix axes to go from 0 to 360 and centred at 90:
 
 			if (axis_seat < 180.0f)
 				axis_seat += 360.0f;
@@ -101,6 +117,8 @@ public class RobotArmControl : MonoBehaviour {
 			axis_wrist += axis_wrist_offset;
 			axis_seat += axis_seat_offset;
 		}
+	    
+       
 	}
 
 	// All axes are in degrees
@@ -115,8 +133,6 @@ public class RobotArmControl : MonoBehaviour {
 		RobotArm_lower_arm.transform.localRotation = Quaternion.AngleAxis (set_lower, localForward);
         RobotArm_upper_arm_back.transform.localPosition = segment2;
         RobotArm_upper_arm_back.transform.localRotation = Quaternion.AngleAxis (set_upper, localForward);
-        // RobotArm_upper_arm_front.transform.localPosition = segmentX;
-        // RobotArm_upper_arm_front.transform.localRotation = Quaternion.AngleAxis(set_upperX, localForward);
         RobotArm_wrist_peice.transform.localPosition = segment3;
 		RobotArm_wrist_peice.transform.localRotation =  Quaternion.AngleAxis (180 - set_wrist, localForward);
 		RobotArm_seat.transform.localPosition = segment4;

@@ -126,7 +126,6 @@ public class ForceSimulator : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
         RobotArm = GetComponentInParent<RobotArmControl>();
         
-		//mc = GameObject.FindGameObjectWithTag ("Player").GetComponent<MovementController>();
 	}
 	
 	void FixedUpdate () {
@@ -195,7 +194,7 @@ public class ForceSimulator : MonoBehaviour {
         //**********************************//
         if (Mathf.Abs(localAccel.y) > ISverticalThreshold)
             rb.AddForce(transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
-
+        
         Vector3 returnStep = Vector3.zero;
         float d_x = transform.position.x - returnPosition.x;
         float d_y = transform.position.y - returnPosition.y;
@@ -213,13 +212,10 @@ public class ForceSimulator : MonoBehaviour {
             //    returnStep.z = -Mathf.Sign(d_z);
             //else
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
-
         transform.Translate(returnStep * ISverticalReturnSpeed);
         //****************//
         //*** Rotation ***//
         //****************//
-
-        // Set transform
         Vector3 temp = mc.transform.rotation.eulerAngles;
         Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
         transform.rotation = rotation_no_y * AM_rotation;
