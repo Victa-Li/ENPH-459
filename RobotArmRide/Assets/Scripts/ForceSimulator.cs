@@ -16,13 +16,11 @@ public class ForceSimulator : MonoBehaviour {
 
     public Target_helper target_helper;
     public Quaternion rotation_no_y;
-    
-    //
-    //TODO: change ethernet comms to use local public variables and lock those
-    //
         
     // Synchronization lock due to sharing of x, y, z, A, B, C values between unity main thread and ethernet communication thread
-    private Object pos_rot_Lock = new Object();
+    public Object pos_rot_Lock = new Object();
+    public Vector3 current_position;
+    public Quaternion current_rotation;
 
     //***************************************//
     //*** Acceleration Mapping Parameters ***//
@@ -217,16 +215,13 @@ public class ForceSimulator : MonoBehaviour {
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
 
         // Update position and rotation
-        lock (pos_rot_Lock)
-        {
-            transform.Translate(returnStep * ISverticalReturnSpeed);
-            //****************//
-            //*** Rotation ***//
-            //****************//
-            Vector3 temp = mc.transform.rotation.eulerAngles;
-            rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
-            transform.rotation = rotation_no_y * AM_rotation;
-        }
+        transform.Translate(returnStep * ISverticalReturnSpeed);
+        //****************//
+        //*** Rotation ***//
+        //****************//
+        Vector3 temp = mc.transform.rotation.eulerAngles;
+        rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
+        transform.rotation = rotation_no_y * AM_rotation;
 
         // Calculate the expected "felt" acceleration:
         float h1 = (new Vector2(localAccel.x, localAccel.z)).magnitude;
@@ -234,9 +229,14 @@ public class ForceSimulator : MonoBehaviour {
         feltAccel = new Vector3(localAccel.x, 0, localAccel.z) / h2 * Physics.gravity.magnitude;
         LinearAcceleration(out seatAccel, transform.position, seatAccelSamples);
 
-
         testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);
-	}
+        
+        lock (pos_rot_Lock)
+        {
+            current_position = transform.position;
+            current_rotation = transform.rotation;
+        }
+    }
 }
 
 
