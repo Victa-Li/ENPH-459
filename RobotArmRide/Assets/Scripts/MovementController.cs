@@ -63,6 +63,15 @@ public class MovementController : MonoBehaviour {
         velocity_r = linearVelocity - Vector3.Cross(angularVelocity, transform.position);
 
         acceleration = linearAcceleration;
+
+		/*
+		Debug.Log ("This is Victa printing something");
+		Debug.Log ("speed is: ");
+		Debug.Log (velocity_r);
+		Debug.Log ("Acceleration is: ");
+		Debug.Log (acceleration);
+		*/
+
         /*
         Vector3 dir;
         float scale = 2f;

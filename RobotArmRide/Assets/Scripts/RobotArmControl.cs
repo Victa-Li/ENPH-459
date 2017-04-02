@@ -36,6 +36,7 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
 
+
 	//private scaleByAcceleration sbaScript;
 
 	// Use this for initialization
@@ -156,5 +157,180 @@ public class RobotArmControl : MonoBehaviour {
 			axis_wrist = Mathf.Rad2Deg * axis4;
 			axis_seat = roll;
 		}
+
+		setAllAngels (0, 0, 0, 0, 0, 0);
+	}
+
+
+	// This is the inverse kinematics to compute all the angles for the 6 segments
+	// @param: x,y,z,roll,pitch,yaw
+	// 		as the position and rotation of the end-of-tooltip coordinates. 
+	public void setAllAngels(float x, float y, float z, float roll, float pitch, float yaw) {
+	
+		// ----------------------------------------- Task 1: setup ------------------------------------------
+		// length of each segmanet 
+		// @to-do: adjust to real lengths
+		float l1 = 10;
+		float l2 = 10;
+		float l3 = 10;
+		float l4 = 10;
+		float l5 = 10;
+
+
+		// thetas are the angles of rotation for each axis: indexed as 1 to 6
+		float theta1 = 0;
+		float theta2 = 0;
+		float theta3 = 0;
+		float theta4 = 0;
+		float theta5 = 0;
+		float theta6 = 0;
+
+		// create the DH parameter matrix 
+		// @to-do: right now it is just dummy numbers; change this later
+		float [,] DHMatrix = new float[7,4];
+		// a: distance along rotated x-axis 
+		float a1 = 350;
+		float a2 = 0;
+		float a3 = 850;
+		float a4 = 145;
+		float a5 = 0;
+		float a6 = 0;
+
+		// alpha: angle rotating along the new x-axis
+		float alpha1 = 0;
+		float alpha2 = Mathf.PI/2;
+		float alpha3 = 0;
+		float alpha4 = Mathf.PI/2;
+		float alpha5 = -Mathf.PI/2;
+		float alpha6 = Mathf.PI/2;
+
+		// d: depth along previous z-axis to common normal
+		float d1 = 0;
+		float d2 = -815;
+		float d3 = 0;
+		float d4 = 0;
+		float d5 = -820;
+		float d6 = 0;
+		float d7 = 170;
+
+		// thetaX_offset: angle about previous z to align its x-axis with the new origin
+		float theta1_offset= 0;
+		float theta2_offset = 0;
+		float theta3_offset = -Mathf.PI/2;
+		float theta4_offset = 0;
+		float theta5_offset = Mathf.PI;
+		float theta6_offset = Mathf.PI;
+		float theta7_offset = 0;
+	
+		// ----------------------------------------- Task 2: Joint 1 ------------------------------------------
+		// Target Transformation T_0_G
+		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
+		Matrix4x4 T_0_G = new Matrix4x4();
+		T_0_G [0, 0] = 0;		T_0_G [0, 1] = 0;		T_0_G [0, 2] = 0;		T_0_G [0, 3] = 0;
+		T_0_G [1, 0] = 0;		T_0_G [1, 1] = 0;		T_0_G [1, 2] = 0;		T_0_G [1, 3] = 0;
+		T_0_G [2, 0] = 0;		T_0_G [2, 1] = 0;		T_0_G [2, 2] = 0;		T_0_G [2, 3] = 0;
+		T_0_G [3, 0] = 0;		T_0_G [3, 1] = 0;		T_0_G [3, 2] = 0;		T_0_G [3, 3] = 1;
+
+		// Target Transformation T_0_2, absolute position of Joint 2, using forward kinematics, with assuming theta2 is zero. 
+		// 		this is to use analyzing Joint 3's position vector. 
+		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
+		Matrix4x4 T_0_2 = new Matrix4x4();
+		T_0_2 [0, 0] = 0;		T_0_2 [0, 1] = 0;		T_0_2 [0, 2] = 0;		T_0_2 [0, 3] = 0;
+		T_0_2 [1, 0] = 0;		T_0_2 [1, 1] = 0;		T_0_2 [1, 2] = 0;		T_0_2 [1, 3] = 0;
+		T_0_2 [2, 0] = 0;		T_0_2 [2, 1] = 0;		T_0_2 [2, 2] = 0;		T_0_2 [2, 3] = 0;
+		T_0_2 [3, 0] = 0;		T_0_2 [3, 1] = 0;		T_0_2 [3, 2] = 0;		T_0_2 [3, 3] = 1;
+
+		// Target Transformation T_0_4, absolute position of Joint 4, using forward kinematics, with assuming theta4 is zero. 
+		// 		this is to use analyzing Joint 5's position vector. 
+		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
+		Matrix4x4 T_0_4 = new Matrix4x4();
+		T_0_4 [0, 0] = 0;		T_0_4 [0, 1] = 0;		T_0_4 [0, 2] = 0;		T_0_4 [0, 3] = 0;
+		T_0_4 [1, 0] = 0;		T_0_4 [1, 1] = 0;		T_0_4 [1, 2] = 0;		T_0_4 [1, 3] = 0;
+		T_0_4 [2, 0] = 0;		T_0_4 [2, 1] = 0;		T_0_4 [2, 2] = 0;		T_0_4 [2, 3] = 0;
+		T_0_4 [3, 0] = 0;		T_0_4 [3, 1] = 0;		T_0_4 [3, 2] = 0;		T_0_4 [3, 3] = 1;
+
+		// Asbolute Seat Orientation vector Nk0_0_6, relative to the base's origin
+		Vector3 Nk0_0_6 = new Vector3 ();
+		Nk0_0_6 [0] = T_0_G [0, 2];
+		Nk0_0_6 [1] = T_0_G [1, 2];
+		Nk0_0_6 [2] = T_0_G [2, 2];
+
+		// Absolute Seat position vector Pk0_0_6, relative to base's origin
+		Vector3 Pk0_0_6 = new Vector3 ();
+		Pk0_0_6 [0] = T_0_G [0, 3];
+		Pk0_0_6 [1] = T_0_G [1, 3];
+		Pk0_0_6 [2] = T_0_G [2, 3];
+
+		// ==> Relative orientation vector from seat to previous joint
+		Vector3 Pk0_4_6 = d6 * Nk0_0_6;
+
+		// ==> Absolute position of previous joint, joint 4
+		Vector3 Pk0_0_4 = Pk0_0_6 - Pk0_4_6;
+
+		// @to-do
+		// Theta1 is either this value, or off by +PI
+		theta1 = Mathf.Atan2 (T_0_G [1, 3] - d6 * T_0_G [1, 2], T_0_G [0, 3] - d6 * T_0_G [0, 2]);
+
+
+		// ----------------------------------------- Task 3: Joint 3 ------------------------------------------
+		// yes... we do not do joint 2 right after joint 1
+
+		// Absolute Joint 2 position vector Pk0_0_2, relative to origin
+		Vector3 Pk0_0_2 = new Vector3 ();
+		Pk0_0_2 [0] = T_0_2 [0, 3];
+		Pk0_0_2 [1] = T_0_2 [1, 3];
+		Pk0_0_2 [2] = T_0_2 [2, 3];
+
+		// Relative position Joint 3 to Joint 2
+		// This length is used to compute the simple geometric relations 
+		Vector3 Pk0_2_4 = Pk0_0_4 - Pk0_0_2;
+		float phi = Mathf.Asin ( (Mathf.Pow(l1,2) - Mathf.Pow(a2,2) + Mathf.Pow(Pk0_2_4.magnitude,2)) / 
+			(2 * Pk0_2_4.magnitude * l1)) + 
+			Mathf.Asin( (Pk0_2_4.magnitude - (Mathf.Pow(l1,2) - Mathf.Pow(a2,2) + Mathf.Pow(Pk0_2_4.magnitude,2)) / (2 * Pk0_2_4.magnitude)) / a2);
+
+		float alpha = Mathf.Atan2(-d4,a3);
+
+		// theta 3 is either this value or off from plus phi to minus phi
+		theta3 = Mathf.PI + phi - alpha;
+
+		// ----------------------------------------- Task 4: Joint 2 ------------------------------------------
+		// I don't see why 3 x 3 matirx multiplication... so it is such a pain to work with the math
+
+		// relative position vector from joint 2 to 4
+		Vector3 Pk2_2_4 = new Vector3 ();
+		Pk2_2_4 [0] = T_0_2 [0, 0] * Pk0_2_4 [0] + T_0_2 [0, 1] * Pk0_2_4 [1] + T_0_2 [0, 2] * Pk0_2_4 [2];
+		Pk2_2_4 [1] = T_0_2 [1, 0] * Pk0_2_4 [0] + T_0_2 [1, 1] * Pk0_2_4 [1] + T_0_2 [1, 2] * Pk0_2_4 [2];
+		Pk2_2_4 [2] = T_0_2 [2, 0] * Pk0_2_4 [0] + T_0_2 [2, 1] * Pk0_2_4 [1] + T_0_2 [2, 2] * Pk0_2_4 [2];
+
+		float beta1 = Mathf.Atan2 (Pk2_2_4[0], Pk2_2_4[1]);
+		float beta2 = Mathf.Asin ((Mathf.Pow (a2, 2) - Mathf.Pow (Pk0_2_4.magnitude,2) + Mathf.Pow (l1, 2)) / (2 * l1 * a2)) +
+			Mathf.Asin ( (l1 - (Mathf.Pow(a2,2) - Mathf.Pow(Pk0_2_4.magnitude,2) + Mathf.Pow(l1,2)) / (2 * l1)) / Pk0_2_4.magnitude);
+
+		// theta 2 is either this value or another one --> please see the document
+		theta2 = Mathf.PI/2 - (Mathf.Abs(beta1) + beta2);
+
+		// ----------------------------------------- Task 5: Joint 5 ------------------------------------------
+		// Now obtain the T_0_4 matrix from results so far, plus assuming theta 4 to be zero
+
+		// absolute Orentation of joint 4
+		Vector3 Nk0_0_4 = new Vector3 ();
+		Nk0_0_4 [0] = T_0_4 [0, 2];
+		Nk0_0_4 [1] = T_0_4 [1, 2];
+		Nk0_0_4 [2] = T_0_4 [2, 2];
+
+		float dotProductResult = Nk0_0_4 [0] * Nk0_0_6 [0] + Nk0_0_4 [1] * Nk0_0_6 [1] + Nk0_0_4 [2] * Nk0_0_6 [2];
+		theta5 = Mathf.PI - Mathf.Acos (dotProductResult);
+
+		// ----------------------------------------- Task 6: Joint 4 and Joint 6 ------------------------------------------
+		// Now obtain the R_4_6 rotation matrix from results so far
+		// but only needs the _2_3, _1_3, _3_2, and _3_1 components
+		Matrix4x4 R_4_6 = new Matrix4x4();
+		R_4_6 [0, 2] = 0;
+		R_4_6 [1, 2] = 0;
+		R_4_6 [2, 1] = 0;
+		R_4_6 [2, 2] = 0;
+
+		// Rotation matrix R_4_6 is used to compute theta4 and theta6, this computation very trivial, but I am not sure R_4_6 is correct
+		// @to-do review this
 	}
 }
