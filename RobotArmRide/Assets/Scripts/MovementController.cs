@@ -4,6 +4,7 @@ using System.Collections;
 /// <summary>
 /// Generic movement controller for the player. Should be inherited for a specific vehicle type.
 /// </summary>
+[RequireComponent(typeof(PlayerMover))]
 public class MovementController : MonoBehaviour {
 
 	Vector3 initPlayerPos;
@@ -29,15 +30,14 @@ public class MovementController : MonoBehaviour {
     public Vector3 angularVelocity;
     
     /// Velocity in the rotating reference frame
-    public Vector3 velocity_r;
-
+    //public Vector3 velocity_r;
 
     public int linearAccelerationSamples = 10;
     public int angularAccelerationSamples = 10;
     public int linearVelocitySamples = 10;
     public int angularVelocitySamples = 10;
 
-    public PlayerMover pm; 
+    private PlayerMover pm; 
 
 	// Use this for initialization
 	void Start () {
@@ -60,25 +60,10 @@ public class MovementController : MonoBehaviour {
         Math3d.LinearAcceleration (out linearAcceleration, transform.position, linearAccelerationSamples);
         Math3d.AngularAcceleration(out angularAcceleration, transform.rotation, angularAccelerationSamples);
 
-        velocity_r = linearVelocity - Vector3.Cross(angularVelocity, transform.position);
+        //velocity_r = linearVelocity - Vector3.Cross(angularVelocity, transform.position);
 
         acceleration = linearAcceleration;
-        /*
-        Vector3 dir;
-        float scale = 2f;
-        dir = new Vector3(angularVelocity.x, 0, 0);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.red);
-        dir = new Vector3(0, angularVelocity.y, 0);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.green);
-        dir = new Vector3(0, 0, angularVelocity.z);
-        dir = Math3d.SetVectorLength(dir, dir.magnitude * scale);
-        dir = gameObject.transform.TransformDirection(dir);
-        Debug.DrawRay(gameObject.transform.position, dir, Color.blue);
-        */
+      
         if (pm != null)
 			pm.MoverFixedUpdate ();
 	}

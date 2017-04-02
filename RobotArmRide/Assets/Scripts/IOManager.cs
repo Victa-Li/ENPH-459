@@ -9,8 +9,6 @@ public class IOManager : MonoBehaviour {
 
 	bool _continue;
 	SerialPort _serialPort;
-	string message;
-	StringComparer stringComparer;
 	Thread readThread;
 	bool lightOn = false;
 	byte byteToSend;
@@ -20,33 +18,25 @@ public class IOManager : MonoBehaviour {
 	float timeLast = 0.0f;
 	float updateTime = 0.02f;
 
-//	private const float accelerationXscale = 60.0f;
-//	private const float accelerationZscale = 60.0f;
-//	private const float accelerationXoffset = 60.0f;
-//	private const float accelerationZoffset = 60.0f;
-
 	public float exaggerationScale = 1.0f;
 
-	public int axis_base_trim = 0;
-	public int axis_lower_trim = 0;
-	public int axis_upper_trim = 0;
-	public int axis_wrist_trim = 0;
-	public int axis_seat_trim = 0;
+	public int axis_base_trim = 7;
+	public int axis_lower_trim = -26;
+	public int axis_upper_trim = 68;
+	public int axis_wrist_trim = -14;
+	public int axis_seat_trim = 37;
 
 	public int servo_base = 90;
 	public int servo_lower = 90;
 	public int servo_upper = 90;
 	public int servo_wrist = 90;
 	public int servo_seat = 90;
-
-	GameObject movementController;
-	//GameObject accelerationController;
+    
 	RobotArmControl robotArm;
 
 	// Use this for initialization
 	void Start () {
-
-		//stringComparer = StringComparer.OrdinalIgnoreCase;
+        
 		readThread = new Thread(Read);
 
 		// Create a new SerialPort object with default settings.
@@ -72,52 +62,17 @@ public class IOManager : MonoBehaviour {
 		readThread.Start();
 		_connected = true;
 
-		//movementController = GameObject.FindGameObjectWithTag ("MovementController");
-		//accelerationController = GameObject.FindGameObjectWithTag ("AccelerationController");
-
 		robotArm = GameObject.Find("Robot Arm").GetComponent<RobotArmControl>();
-
-//		while (true) {
-//			// Start read coroutine
-//			StartCoroutine
-//			(
-//				AsynchronousReadFromArduino
-//				(   (string s) => Debug.Log(s),     // Callback
-//					() => Debug.LogError("Error!"), // Error callback
-//					10f                             // Timeout (seconds)
-//				)
-//			);
-//		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (!_connected) {
-//			// Wait for connetion to establish
-//			while (true)
-//			{
-//				try
-//				{
-//					char[] inputBuffer = new char[3];
-//					_serialPort.Read(inputBuffer, 0, 3);
-//					Debug.Log("Read: \"" + inputBuffer[0] + "\"");
-//					if (inputBuffer[0] == 'A')
-//					{
-//						_serialPort.Write("B");
-//						_serialPort.BaseStream.Flush ();
-//						_connected = true;
-//						break;
-//					}
-//				}
-//				catch (TimeoutException) {}
-//			}
+
 		} else {
 			if (timeLast + updateTime < Time.time) {
 				
 				timeLast = Time.time;
-
-//				Leaning leaningScript = movementController.GetComponent<Leaning>();
-//				scaleByAcceleration sbaScript = accelerationController.GetComponent<scaleByAcceleration>();
 
 				servo_base = Math.Max(Math.Min((int)Mathf.Floor (robotArm.axis_base) + axis_base_trim, 180), 0);
 				servo_lower = Math.Max(Math.Min((int)Mathf.Floor (robotArm.axis_lower) + axis_lower_trim, 180), 0);
@@ -126,10 +81,6 @@ public class IOManager : MonoBehaviour {
 				servo_seat = Math.Max(Math.Min((int)Mathf.Floor (robotArm.axis_seat) + axis_seat_trim, 180), 0);
 
 				sendBuffer [0] = (byte)'S';
-//				sendBuffer [1] = (byte) (int)Math.Floor(leaningScript.afkRotX);
-//				sendBuffer [2] = (byte) (int)Math.Floor(leaningScript.afkRotZ);
-//				sendBuffer [1] = (byte) (int)Math.Floor(sbaScript.playerAcceleration.x * accelerationXscale + accelerationXoffset);
-//				sendBuffer [2] = (byte) (int)Math.Floor(sbaScript.playerAcceleration.z * accelerationZscale + accelerationZoffset);
 				sendBuffer [1] = (byte) servo_base;
 				sendBuffer [2] = (byte) servo_lower;
 				sendBuffer [3] = (byte) servo_upper;
@@ -137,7 +88,6 @@ public class IOManager : MonoBehaviour {
 				sendBuffer [5] = (byte) servo_seat;
 				sendBuffer [6] = (byte)'\n';
 				_serialPort.Write (sendBuffer, 0, sendBuffer.Length);
-				//_serialPort.BaseStream.Flush ();
 				//Debug.Log ("Sent angle: " + sendBuffer [1]);
 			}
 		}
