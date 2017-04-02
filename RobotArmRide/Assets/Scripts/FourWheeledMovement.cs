@@ -1,13 +1,21 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityStandardAssets.Vehicles.Car;
 
+[RequireComponent(typeof(CarController))]
 public class FourWheeledMovement : PlayerMover {
 
 	MovementController mc;
 	Rigidbody rb;
+    
+    private CarController m_Car; // the car controller we want to use
 
-	// Use this for initialization
-	void Start () {
+    private void Awake()
+    {
+        // get the car controller
+        m_Car = GetComponent<CarController>();
+    }
+    // Use this for initialization
+    void Start () {
 		mc = GetComponent<MovementController> ();
 		rb = GetComponent<Rigidbody> ();
 	}
@@ -22,7 +30,11 @@ public class FourWheeledMovement : PlayerMover {
 	public override void MoverFixedUpdate()
 	{
 		base.MoverFixedUpdate ();
+        float moveHorizontal = mc.rawInputHoriz;
+        float moveVertical = mc.rawInputVert;
+        float handbrake = mc.handbrake;
 
-
-	}
+        // pass the input to the car!
+        m_Car.Move(moveHorizontal, moveVertical, moveVertical, handbrake);
+    }
 }
