@@ -37,6 +37,53 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
 
 
+	// Inverse Kinematic constants
+	float l1 = 515;
+
+	// thetas are the angles of rotation for each axis: indexed as 1 to 6
+	float theta1;
+	float theta2;
+	float theta3;
+	float theta4;
+	float theta5;
+	float theta6;
+
+	// a: distance along rotated x-axis 
+	float a1 = 315;
+	float a2 = 0;
+	float a3 = 560;
+	float a4 = 35;
+	float a5 = 0;
+	float a6 = 0;
+
+	// alpha: angle rotating along the new x-axis
+	float alpha1 = 0;
+	float alpha2 = Mathf.PI/2;
+	float alpha3 = 0;
+	float alpha4 = Mathf.PI/2;
+	float alpha5 = -Mathf.PI/2;
+	float alpha6 = Mathf.PI/2;
+
+	// d: depth along previous z-axis to common normal
+	float d1 = 0;
+	float d2 = -400;
+	float d3 = 0;
+	float d4 = 0;
+	float d5 = -515;
+	float d6 = 0;
+	float d7 = 87;
+
+	// thetaX_offset: angle about previous z to align its x-axis with the new origin
+	float theta1_offset= 0;
+	float theta2_offset = 0;
+	float theta3_offset = -Mathf.PI/2;
+	float theta4_offset = 0;
+	float theta5_offset = Mathf.PI;
+	float theta6_offset = Mathf.PI;
+	float theta7_offset = 0;
+
+
+
 	//private scaleByAcceleration sbaScript;
 
 	// Use this for initialization
@@ -169,85 +216,16 @@ public class RobotArmControl : MonoBehaviour {
 	
 		// ----------------------------------------- Task 1: setup ------------------------------------------
 		// length of each segmanet 
-		// @to-do: adjust to real lengths
-		float l1 = 10;
-		float l2 = 10;
-		float l3 = 10;
-		float l4 = 10;
-		float l5 = 10;
 
 
-		// thetas are the angles of rotation for each axis: indexed as 1 to 6
-		float theta1 = 0;
-		float theta2 = 0;
-		float theta3 = 0;
-		float theta4 = 0;
-		float theta5 = 0;
-		float theta6 = 0;
-
-		// create the DH parameter matrix 
-		// @to-do: right now it is just dummy numbers; change this later
-		float [,] DHMatrix = new float[7,4];
-		// a: distance along rotated x-axis 
-		float a1 = 350;
-		float a2 = 0;
-		float a3 = 850;
-		float a4 = 145;
-		float a5 = 0;
-		float a6 = 0;
-
-		// alpha: angle rotating along the new x-axis
-		float alpha1 = 0;
-		float alpha2 = Mathf.PI/2;
-		float alpha3 = 0;
-		float alpha4 = Mathf.PI/2;
-		float alpha5 = -Mathf.PI/2;
-		float alpha6 = Mathf.PI/2;
-
-		// d: depth along previous z-axis to common normal
-		float d1 = 0;
-		float d2 = -815;
-		float d3 = 0;
-		float d4 = 0;
-		float d5 = -820;
-		float d6 = 0;
-		float d7 = 170;
-
-		// thetaX_offset: angle about previous z to align its x-axis with the new origin
-		float theta1_offset= 0;
-		float theta2_offset = 0;
-		float theta3_offset = -Mathf.PI/2;
-		float theta4_offset = 0;
-		float theta5_offset = Mathf.PI;
-		float theta6_offset = Mathf.PI;
-		float theta7_offset = 0;
-	
 		// ----------------------------------------- Task 2: Joint 1 ------------------------------------------
 		// Target Transformation T_0_G
-		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
-		Matrix4x4 T_0_G = new Matrix4x4();
-		T_0_G [0, 0] = 0;		T_0_G [0, 1] = 0;		T_0_G [0, 2] = 0;		T_0_G [0, 3] = 0;
-		T_0_G [1, 0] = 0;		T_0_G [1, 1] = 0;		T_0_G [1, 2] = 0;		T_0_G [1, 3] = 0;
-		T_0_G [2, 0] = 0;		T_0_G [2, 1] = 0;		T_0_G [2, 2] = 0;		T_0_G [2, 3] = 0;
-		T_0_G [3, 0] = 0;		T_0_G [3, 1] = 0;		T_0_G [3, 2] = 0;		T_0_G [3, 3] = 1;
+		// Here I make use of the Unity 4x4 Matrix function to construct a transformation matrix for us
+		Vector3 origin = new Vector3(0,0,0);
+		Vector3 seat_position = new Vector3(x,y,z);
+		Vector3 seat_orientation = new Vector3(roll,pitch,yaw);
+		Matrix4x4 T_0_G = Matrix4x4.TRS(origin, Quaternion.LookRotation(seat_position - origin, seat_orientation), Vector3.one); 
 
-		// Target Transformation T_0_2, absolute position of Joint 2, using forward kinematics, with assuming theta2 is zero. 
-		// 		this is to use analyzing Joint 3's position vector. 
-		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
-		Matrix4x4 T_0_2 = new Matrix4x4();
-		T_0_2 [0, 0] = 0;		T_0_2 [0, 1] = 0;		T_0_2 [0, 2] = 0;		T_0_2 [0, 3] = 0;
-		T_0_2 [1, 0] = 0;		T_0_2 [1, 1] = 0;		T_0_2 [1, 2] = 0;		T_0_2 [1, 3] = 0;
-		T_0_2 [2, 0] = 0;		T_0_2 [2, 1] = 0;		T_0_2 [2, 2] = 0;		T_0_2 [2, 3] = 0;
-		T_0_2 [3, 0] = 0;		T_0_2 [3, 1] = 0;		T_0_2 [3, 2] = 0;		T_0_2 [3, 3] = 1;
-
-		// Target Transformation T_0_4, absolute position of Joint 4, using forward kinematics, with assuming theta4 is zero. 
-		// 		this is to use analyzing Joint 5's position vector. 
-		// @to-do: right now it is just dummy numbers. Get these numbers from read() method
-		Matrix4x4 T_0_4 = new Matrix4x4();
-		T_0_4 [0, 0] = 0;		T_0_4 [0, 1] = 0;		T_0_4 [0, 2] = 0;		T_0_4 [0, 3] = 0;
-		T_0_4 [1, 0] = 0;		T_0_4 [1, 1] = 0;		T_0_4 [1, 2] = 0;		T_0_4 [1, 3] = 0;
-		T_0_4 [2, 0] = 0;		T_0_4 [2, 1] = 0;		T_0_4 [2, 2] = 0;		T_0_4 [2, 3] = 0;
-		T_0_4 [3, 0] = 0;		T_0_4 [3, 1] = 0;		T_0_4 [3, 2] = 0;		T_0_4 [3, 3] = 1;
 
 		// Asbolute Seat Orientation vector Nk0_0_6, relative to the base's origin
 		Vector3 Nk0_0_6 = new Vector3 ();
@@ -267,13 +245,17 @@ public class RobotArmControl : MonoBehaviour {
 		// ==> Absolute position of previous joint, joint 4
 		Vector3 Pk0_0_4 = Pk0_0_6 - Pk0_4_6;
 
-		// @to-do
+		// @to-do: check
 		// Theta1 is either this value, or off by +PI
 		theta1 = Mathf.Atan2 (T_0_G [1, 3] - d6 * T_0_G [1, 2], T_0_G [0, 3] - d6 * T_0_G [0, 2]);
 
 
 		// ----------------------------------------- Task 3: Joint 3 ------------------------------------------
 		// yes... we do not do joint 2 right after joint 1
+
+		// Target Transformation T_0_2, absolute position of Joint 2, using forward kinematics, with assuming theta2 is zero. 
+		// 		this is to use analyzing Joint 3's position vector. 
+		Matrix4x4 T_0_2 = getT_0_2(theta1, 0);
 
 		// Absolute Joint 2 position vector Pk0_0_2, relative to origin
 		Vector3 Pk0_0_2 = new Vector3 ();
@@ -290,7 +272,7 @@ public class RobotArmControl : MonoBehaviour {
 
 		float alpha = Mathf.Atan2(-d4,a3);
 
-		// theta 3 is either this value or off from plus phi to minus phi
+		// @to-do: check. theta 3 is either this value or off from plus phi to minus phi
 		theta3 = Mathf.PI + phi - alpha;
 
 		// ----------------------------------------- Task 4: Joint 2 ------------------------------------------
@@ -306,11 +288,12 @@ public class RobotArmControl : MonoBehaviour {
 		float beta2 = Mathf.Asin ((Mathf.Pow (a2, 2) - Mathf.Pow (Pk0_2_4.magnitude,2) + Mathf.Pow (l1, 2)) / (2 * l1 * a2)) +
 			Mathf.Asin ( (l1 - (Mathf.Pow(a2,2) - Mathf.Pow(Pk0_2_4.magnitude,2) + Mathf.Pow(l1,2)) / (2 * l1)) / Pk0_2_4.magnitude);
 
-		// theta 2 is either this value or another one --> please see the document
+		// @to-do: check. theta 2 is either this value or another one --> please see the document
 		theta2 = Mathf.PI/2 - (Mathf.Abs(beta1) + beta2);
 
 		// ----------------------------------------- Task 5: Joint 5 ------------------------------------------
 		// Now obtain the T_0_4 matrix from results so far, plus assuming theta 4 to be zero
+		Matrix4x4 T_0_4 = getT_0_4(theta1,theta2, theta3, 0);
 
 		// absolute Orentation of joint 4
 		Vector3 Nk0_0_4 = new Vector3 ();
@@ -323,17 +306,99 @@ public class RobotArmControl : MonoBehaviour {
 
 		// ----------------------------------------- Task 6: Joint 4 and Joint 6 ------------------------------------------
 		// Now obtain the R_4_6 rotation matrix from results so far
-		// but only needs the _2_3, _1_3, _3_2, and _3_1 components
-		Matrix4x4 R_4_6 = new Matrix4x4();
-		R_4_6 [0, 2] = 0;
-		R_4_6 [1, 2] = 0;
-		R_4_6 [2, 1] = 0;
-		R_4_6 [2, 2] = 0;
+		// theta6 is setup such that its angel of rotation is the same as roll factor
+		theta6 = roll;
 
-		// Rotation matrix R_4_6 is used to compute theta4 and theta6, this computation very trivial, but I am not sure R_4_6 is correct
+		// Rotation matrix T_4_6 is used to compute theta4 and theta6, this computation very trivial, but I am not sure R_4_6 is correct
 		// @to-do review this
+		Matrix4x4 T_4_6 = getT_4_6(theta5,theta6);
+		theta4 = Mathf.Atan2 (-T_4_6 [1, 2], T_4_6 [0, 2]);
+	}
 
-		theta4 = Mathf.Atan2 (-R_4_6 [1, 2], R_4_6 [0, 2]);
-		theta6 = Mathf.Atan2 (-R_4_6 [2, 1], R_4_6 [2, 0]);
+	// Due to the limited vector and matrix size in Unity... I cannot create a good function. This is just made to clear out the structure
+	// the code
+	// Target Transformation T_0_2, absolute position of Joint 2, using forward kinematics, with assuming theta2 is zero. 
+	// 		this is to use analyzing Joint 3's position vector. 
+	// @param: angle: theta1 should already be calculated, theta2 should be zero
+	// @return: the result of Transformation matrix T_0_2
+	public Matrix4x4 getT_0_2 (float theta1, float theta2) {
+		Matrix4x4 T_0_1 = new Matrix4x4 ();
+		T_0_1 [0, 0] = Mathf.Cos(theta1); 		T_0_1 [0, 1] = -Mathf.Sin(theta1);		T_0_1 [0, 2] = 0;		T_0_1 [0, 3] = 0;
+		T_0_1 [1, 0] = Mathf.Sin(theta1); 		T_0_1 [1, 1] = Mathf.Cos(theta1);		T_0_1 [1, 2] = 0;		T_0_1 [1, 3] = 0;
+		T_0_1 [2, 0] = 0; 		T_0_1 [2, 1] = 0;		T_0_1 [2, 2] = 1;		T_0_1 [2, 3] = d1;
+		T_0_1 [3, 0] = 0; 		T_0_1 [3, 1] = 0;		T_0_1 [3, 2] = 0;		T_0_1 [3, 3] = 1;
+
+		Matrix4x4 T_1_2 = new Matrix4x4 ();
+		T_1_2 [0, 0] = Mathf.Cos(theta2); 		T_1_2 [0, 1] = -Mathf.Sin(theta2);		T_1_2 [0, 2] = 0;		T_1_2 [0, 3] = alpha1;
+		T_1_2 [1, 0] = Mathf.Cos(alpha1)*Mathf.Sin(theta2); 		T_1_2 [1, 1] = Mathf.Cos(alpha1)*Mathf.Cos(theta2);		T_1_2 [1, 2] = -Mathf.Sin(alpha1);		T_1_2 [1, 3] = -d2*Mathf.Sin(alpha1);
+		T_1_2 [2, 0] = Mathf.Sin(alpha1)*Mathf.Sin(theta2); 		T_1_2 [2, 1] = Mathf.Sin(alpha1)*Mathf.Cos(theta2);		T_1_2 [2, 2] = Mathf.Cos(alpha1);		T_1_2 [2, 3] = d2*Mathf.Cos(alpha1);
+		T_1_2 [3, 0] = 0; 		T_1_2 [3, 1] = 0;		T_1_2 [3, 2] = 0;		T_1_2 [3, 3] = 1;
+
+		Matrix4x4 T_0_2 = new Matrix4x4 ();
+		T_0_2 = T_0_1 * T_1_2;
+
+		return T_0_2;
+	}
+
+	// Due to the limited vector and matrix size in Unity... I cannot create a good function. This is just made to clear out the structure
+	// the code
+	// Target Transformation T_0_4, absolute position of Joint 4, using forward kinematics, with assuming theta4 is zero. 
+	// 		this is to use analyzing Joint 4's position vector. 
+	// @param: angle: theta1,2,3 should already be calculated, theta4 should be zero
+	// @return: the result of Transformation matrix T_0_4
+	public Matrix4x4 getT_0_4 (float theta1, float theta2, float theta3, float theta4) {
+		Matrix4x4 T_0_1 = new Matrix4x4 ();
+		T_0_1 [0, 0] = Mathf.Cos(theta1); 		T_0_1 [0, 1] = -Mathf.Sin(theta1);		T_0_1 [0, 2] = 0;		T_0_1 [0, 3] = 0;
+		T_0_1 [1, 0] = Mathf.Sin(theta1); 		T_0_1 [1, 1] = Mathf.Cos(theta1);		T_0_1 [1, 2] = 0;		T_0_1 [1, 3] = 0;
+		T_0_1 [2, 0] = 0; 		T_0_1 [2, 1] = 0;		T_0_1 [2, 2] = 1;		T_0_1 [2, 3] = d1;
+		T_0_1 [3, 0] = 0; 		T_0_1 [3, 1] = 0;		T_0_1 [3, 2] = 0;		T_0_1 [3, 3] = 1;
+
+		Matrix4x4 T_1_2 = new Matrix4x4 ();
+		T_1_2 [0, 0] = Mathf.Cos(theta2); 		T_1_2 [0, 1] = -Mathf.Sin(theta2);		T_1_2 [0, 2] = 0;		T_1_2 [0, 3] = alpha1;
+		T_1_2 [1, 0] = Mathf.Cos(alpha1)*Mathf.Sin(theta2); 		T_1_2 [1, 1] = Mathf.Cos(alpha1)*Mathf.Cos(theta2);		T_1_2 [1, 2] = -Mathf.Sin(alpha1);		T_1_2 [1, 3] = -d2*Mathf.Sin(alpha1);
+		T_1_2 [2, 0] = Mathf.Sin(alpha1)*Mathf.Sin(theta2); 		T_1_2 [2, 1] = Mathf.Sin(alpha1)*Mathf.Cos(theta2);		T_1_2 [2, 2] = Mathf.Cos(alpha1);		T_1_2 [2, 3] = d2*Mathf.Cos(alpha1);
+		T_1_2 [3, 0] = 0; 		T_1_2 [3, 1] = 0;		T_1_2 [3, 2] = 0;		T_1_2 [3, 3] = 1;
+
+		Matrix4x4 T_2_3 = new Matrix4x4 ();
+		T_2_3 [0, 0] = Mathf.Cos(theta3); 		T_2_3 [0, 1] = -Mathf.Sin(theta3);		T_2_3 [0, 2] = 0;		T_2_3 [0, 3] = alpha2;
+		T_2_3 [1, 0] = Mathf.Cos(alpha2)*Mathf.Sin(theta3); 		T_2_3 [1, 1] = Mathf.Cos(alpha2)*Mathf.Cos(theta3);		T_2_3 [1, 2] = -Mathf.Sin(alpha2);		T_2_3 [1, 3] = -d2*Mathf.Sin(alpha2);
+		T_2_3 [2, 0] = Mathf.Sin(alpha2)*Mathf.Sin(theta3); 		T_2_3 [2, 1] = Mathf.Sin(alpha2)*Mathf.Cos(theta3);		T_2_3 [2, 2] = Mathf.Cos(alpha2);		T_2_3 [2, 3] = d2*Mathf.Cos(alpha2);
+		T_2_3 [3, 0] = 0; 		T_2_3 [3, 1] = 0;		T_2_3 [3, 2] = 0;		T_2_3 [3, 3] = 1;
+
+		Matrix4x4 T_3_4 = new Matrix4x4 ();
+		T_3_4 [0, 0] = Mathf.Cos(theta4); 		T_3_4 [0, 1] = -Mathf.Sin(theta4);		T_3_4 [0, 2] = 0;		T_3_4 [0, 3] = alpha3;
+		T_3_4 [1, 0] = Mathf.Cos(alpha3)*Mathf.Sin(theta4); 		T_3_4 [1, 1] = Mathf.Cos(alpha3)*Mathf.Cos(theta4);		T_3_4 [1, 2] = -Mathf.Sin(alpha3);		T_3_4 [1, 3] = -d2*Mathf.Sin(alpha3);
+		T_3_4 [2, 0] = Mathf.Sin(alpha3)*Mathf.Sin(theta4); 		T_3_4 [2, 1] = Mathf.Sin(alpha3)*Mathf.Cos(theta4);		T_3_4 [2, 2] = Mathf.Cos(alpha3);		T_3_4 [2, 3] = d2*Mathf.Cos(alpha3);
+		T_3_4 [3, 0] = 0; 		T_3_4 [3, 1] = 0;		T_3_4 [3, 2] = 0;		T_3_4 [3, 3] = 1;
+
+		Matrix4x4 T_0_4 = new Matrix4x4 ();
+		T_0_4 = T_0_1 * T_1_2 * T_2_3 * T_3_4;
+
+		return T_0_4;
+	}
+
+	// Due to the limited vector and matrix size in Unity... I cannot create a good function. This is just made to clear out the structure
+	// the code
+	// Target Transformation T_0_4, absolute position of Joint 4, using forward kinematics, with assuming theta4 is zero. 
+	// 		this is to use analyzing Joint 4's position vector. 
+	// @param: angle: theta1,2,3 should already be calculated, theta4 should be zero
+	// @return: the result of Transformation matrix T_0_4
+	public Matrix4x4 getT_4_6 (float theta5, float theta6) {
+		Matrix4x4 T_5_6 = new Matrix4x4 ();
+		T_5_6 [0, 0] = Mathf.Cos(theta6); 		T_5_6 [0, 1] = -Mathf.Sin(theta6);		T_5_6 [0, 2] = 0;		T_5_6 [0, 3] = alpha5;
+		T_5_6 [1, 0] = Mathf.Cos(alpha5)*Mathf.Sin(theta6); 		T_5_6 [1, 1] = Mathf.Cos(alpha5)*Mathf.Cos(theta6);		T_5_6 [1, 2] = -Mathf.Sin(alpha5);		T_5_6 [1, 3] = -d2*Mathf.Sin(alpha5);
+		T_5_6 [2, 0] = Mathf.Sin(alpha5)*Mathf.Sin(theta6); 		T_5_6 [2, 1] = Mathf.Sin(alpha5)*Mathf.Cos(theta6);		T_5_6 [2, 2] = Mathf.Cos(alpha5);		T_5_6 [2, 3] = d2*Mathf.Cos(alpha5);
+		T_5_6 [3, 0] = 0; 		T_5_6 [3, 1] = 0;		T_5_6 [3, 2] = 0;		T_5_6 [3, 3] = 1;
+
+		Matrix4x4 T_4_5 = new Matrix4x4 ();
+		T_4_5 [0, 0] = Mathf.Cos(theta5); 		T_4_5 [0, 1] = -Mathf.Sin(theta5);		T_4_5 [0, 2] = 0;		T_4_5 [0, 3] = alpha4;
+		T_4_5 [1, 0] = Mathf.Cos(alpha4)*Mathf.Sin(theta5); 		T_4_5 [1, 1] = Mathf.Cos(alpha4)*Mathf.Cos(theta5);		T_4_5 [1, 2] = -Mathf.Sin(alpha4);		T_4_5 [1, 3] = -d2*Mathf.Sin(alpha4);
+		T_4_5 [2, 0] = Mathf.Sin(alpha4)*Mathf.Sin(theta5); 		T_4_5 [2, 1] = Mathf.Sin(alpha4)*Mathf.Cos(theta5);		T_4_5 [2, 2] = Mathf.Cos(alpha4);		T_4_5 [2, 3] = d2*Mathf.Cos(alpha4);
+		T_4_5 [3, 0] = 0; 		T_4_5 [3, 1] = 0;		T_4_5 [3, 2] = 0;		T_4_5 [3, 3] = 1;
+
+		Matrix4x4 T_4_6 = new Matrix4x4 ();
+		T_4_6 = T_4_5 * T_5_6;
+
+		return T_4_6;
 	}
 }
