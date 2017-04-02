@@ -31,10 +31,10 @@ public class RobotArmControl : MonoBehaviour {
 
 	private bool RA_complete = false;
 
-	private readonly Vector3 segment1 = new Vector3 (0.0f, 0.38f, 0.0f); // From base of arm to Kuka-Axis 2
-	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
-	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
-	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
+	private readonly Vector3 segment1 = new Vector3 (0.025f, 0.613f, 0.0f); // From base of arm to Kuka-Axis 2
+	private readonly Vector3 segment2 = new Vector3 (0.56f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
+	private readonly Vector3 segment3 = new Vector3 (0.515f, 0.035f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
+	private readonly Vector3 segment4 = new Vector3 (0.087f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
     
     //StreamWriter writer = new StreamWriter("robot.xml");
 
