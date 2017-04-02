@@ -332,5 +332,8 @@ public class RobotArmControl : MonoBehaviour {
 
 		// Rotation matrix R_4_6 is used to compute theta4 and theta6, this computation very trivial, but I am not sure R_4_6 is correct
 		// @to-do review this
+
+		theta4 = Mathf.Atan2 (-R_4_6 [1, 2], R_4_6 [0, 2]);
+		theta6 = Mathf.Atan2 (-R_4_6 [2, 1], R_4_6 [2, 0]);
 	}
 }
