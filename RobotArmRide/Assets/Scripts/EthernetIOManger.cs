@@ -145,6 +145,17 @@ public class EthernetIOManger : MonoBehaviour
                 timestamp = temp[1];
                 string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
                 testoutput = temp1[1];
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(received_data);
+                XmlNode newPos = doc.DocumentElement.SelectSingleNode("/Rob/RIst");
+                FeedBackSimulateOnCube.x = (float)Convert.ToDouble(newPos.Attributes["X"].Value);
+                FeedBackSimulateOnCube.y = (float)Convert.ToDouble(newPos.Attributes["Y"].Value);
+                FeedBackSimulateOnCube.z = (float)Convert.ToDouble(newPos.Attributes["Z"].Value);
+                FeedBackSimulateOnCube.anglex = (float)Convert.ToDouble(newPos.Attributes["A"].Value);
+                FeedBackSimulateOnCube.angley = (float)Convert.ToDouble(newPos.Attributes["B"].Value);
+                FeedBackSimulateOnCube.anglez = (float)Convert.ToDouble(newPos.Attributes["C"].Value);
+               
             }
             catch (Exception e)
             {
