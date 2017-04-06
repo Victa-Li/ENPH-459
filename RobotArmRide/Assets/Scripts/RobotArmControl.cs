@@ -19,7 +19,8 @@ public class RobotArmControl : MonoBehaviour {
 
 	public float axis_base = 0.0f;
 	public float axis_lower = 0.0f;
-	public float axis_upper = 0.0f;
+	public float axis_upper_back = 0.0f;
+	public float axis_upper_front = 0.0f;
 	public float axis_wrist = 0.0f;
 	public float axis_seat = 0.0f;
 
@@ -31,11 +32,10 @@ public class RobotArmControl : MonoBehaviour {
 
 	private bool RA_complete = false;
 
-	private readonly Vector3 segment1 = new Vector3 (0.0f, 0.38f, 0.0f); // From base of arm to Kuka-Axis 2
-	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
-	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
-	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
-
+	private readonly Vector3 segment1 = new Vector3 (0.025f, 0.613f, 0.0f); // From base of arm to Kuka-Axis 2
+	private readonly Vector3 segment2 = new Vector3 (0.56f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
+	private readonly Vector3 segment3 = new Vector3 (0.515f, 0.035f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
+	private readonly Vector3 segment4 = new Vector3 (0.087f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
 
 	// Inverse Kinematic constants
 	float l1 = 515;
@@ -89,6 +89,8 @@ public class RobotArmControl : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		Transform[] RA_parts = GetComponentsInChildren<Transform> ();
+        
+        Debug.Log("inside start");
 		for (int i = 0; i < RA_parts.Length; i++) {
 			if (RA_parts[i].name == "base")
 				RobotArm_base = RA_parts [i].gameObject;
@@ -104,9 +106,10 @@ public class RobotArmControl : MonoBehaviour {
 				RobotArm_wrist_peice = RA_parts [i].gameObject;
 			else if (RA_parts[i].name == "seat")
 				RobotArm_seat = RA_parts[i].gameObject;
-			
 		}
-		if (RobotArm_base != null
+
+       
+        if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
 		    && RobotArm_lower_arm != null
 		    && RobotArm_upper_arm_back != null
@@ -115,25 +118,28 @@ public class RobotArmControl : MonoBehaviour {
 		    && RobotArm_seat != null) {
 
 			RA_complete = true;
-			//sbaScript = GameObject.FindGameObjectWithTag ("AccelerationController").GetComponent<scaleByAcceleration>();
-		} else {
+
+        } else {
 			Debug.LogError ("Robot arm not initialized!");
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
+
+
+
+    // Update is called once per frame
+    void Update ()
+	{
+       
+
 
 	}
 
-	void FixedUpdate() {
+    void FixedUpdate() {
+      
 		if (RA_complete) {
 
-			//setAxes (sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.z * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f, sbaScript.playerAcceleration.x * 90.0f);
-			setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
-			setAxes (axis_base, axis_lower, axis_upper, axis_wrist, axis_seat);
-
-			// Fix axes to go from 0 to 360 and centred at 90:
+			setAllAngles(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
+			setAxes (axis_base, axis_lower, axis_upper_back, axis_upper_front, axis_wrist, axis_seat);
 
 			if (axis_seat < 180.0f)
 				axis_seat += 360.0f;
@@ -145,29 +151,31 @@ public class RobotArmControl : MonoBehaviour {
 
 			axis_base += axis_base_offset;
 			axis_lower += axis_lower_offset;
-			axis_upper += axis_upper_offset;
+			axis_upper_back += axis_upper_offset;
 			axis_wrist += axis_wrist_offset;
 			axis_seat += axis_seat_offset;
 		}
+	    
+       
 	}
 
 	// All axes are in degrees
-	public void setAxes(float set_rotor, float set_lower, float set_upper, float set_wrist, float set_seat) {
+	public void setAxes(float set_rotor, float set_lower, float set_upper_back, float set_upper_front, float set_wrist, float set_seat) {
 
 		Vector3 localForward = Math3d.GetForwardVector (transform.rotation);
 		Vector3 localRight = Vector3.Cross (localForward, Vector3.down);
 
-		RobotArm_main_rotor.transform.localPosition = Vector3.zero;
+		//RobotArm_main_rotor.transform.localPosition = Vector3.zero;
 		RobotArm_main_rotor.transform.localRotation = Quaternion.AngleAxis(set_rotor, Vector3.up);
-		RobotArm_lower_arm.transform.localPosition = segment1;
+		//RobotArm_lower_arm.transform.localPosition = segment1;
 		RobotArm_lower_arm.transform.localRotation = Quaternion.AngleAxis (set_lower, localForward);
-        RobotArm_upper_arm_back.transform.localPosition = segment2;
-        RobotArm_upper_arm_back.transform.localRotation = Quaternion.AngleAxis (set_upper, localForward);
-        // RobotArm_upper_arm_front.transform.localPosition = segmentX;
-        // RobotArm_upper_arm_front.transform.localRotation = Quaternion.AngleAxis(set_upperX, localForward);
-        RobotArm_wrist_peice.transform.localPosition = segment3;
+        //RobotArm_upper_arm_back.transform.localPosition = segment2;
+        RobotArm_upper_arm_back.transform.localRotation = Quaternion.AngleAxis (set_upper_back, localForward);
+		// RobotArm_upper_arm_front.transform.localPosition = segmentX;
+		 //RobotArm_upper_arm_front.transform.localRotation = Quaternion.AngleAxis(set_upperX, localForward);
+        //RobotArm_wrist_peice.transform.localPosition = segment3;
 		RobotArm_wrist_peice.transform.localRotation =  Quaternion.AngleAxis (180 - set_wrist, localForward);
-		RobotArm_seat.transform.localPosition = segment4;
+		//RobotArm_seat.transform.localPosition = segment4;
 		RobotArm_seat.transform.localRotation =  Quaternion.AngleAxis (180 + set_seat, localRight);
 
 	}
@@ -200,19 +208,17 @@ public class RobotArmControl : MonoBehaviour {
 		if (!float.IsNaN (axis3) && !float.IsNaN (axis2)) {
 			axis_base = Mathf.Rad2Deg * axis1;
 			axis_lower = Mathf.Rad2Deg * axis2;
-			axis_upper = Mathf.Rad2Deg * axis3;
+			axis_upper_back = Mathf.Rad2Deg * axis3;
 			axis_wrist = Mathf.Rad2Deg * axis4;
 			axis_seat = roll;
-		}
-
-		setAllAngels (0, 0, 0, 0, 0, 0);
+		}			
 	}
 
 
 	// This is the inverse kinematics to compute all the angles for the 6 segments
 	// @param: x,y,z,roll,pitch,yaw
 	// 		as the position and rotation of the end-of-tooltip coordinates. 
-	public void setAllAngels(float x, float y, float z, float roll, float pitch, float yaw) {
+	public void setAllAngles(float x, float y, float z, float roll, float pitch, float yaw) {
 	
 		// ----------------------------------------- Task 1: setup ------------------------------------------
 		// length of each segmanet 
@@ -247,6 +253,23 @@ public class RobotArmControl : MonoBehaviour {
 
 		// @to-do: check
 		// Theta1 is either this value, or off by +PI
+		// debugging
+
+		float factor1 = T_0_G [0, 0];
+		float factor2 = T_0_G [0, 1];
+		float factor3 = T_0_G [0, 2];
+		float factor4 = T_0_G [0, 3];
+
+		float factor5 = T_0_G [1, 0];
+		float factor6 = T_0_G [1, 1];
+		float factor7 = T_0_G [1, 2];
+		float factor8 = T_0_G [1, 3];
+		/*
+		float factor1 = T_0_G [1, 3];
+		float factor2 = T_0_G [1, 2];
+		float factor3 = T_0_G [0, 3];
+		float factor4 = T_0_G [0, 2];
+		*/
 		theta1 = Mathf.Atan2 (T_0_G [1, 3] - d6 * T_0_G [1, 2], T_0_G [0, 3] - d6 * T_0_G [0, 2]);
 
 
@@ -313,6 +336,47 @@ public class RobotArmControl : MonoBehaviour {
 		// @to-do review this
 		Matrix4x4 T_4_6 = getT_4_6(theta5,theta6);
 		theta4 = Mathf.Atan2 (-T_4_6 [1, 2], T_4_6 [0, 2]);
+
+
+		// ----------------------------------------- Task 7: set the angles --------------------------------------------------
+		// okay I just want to set the angles to be 90 and see if the angles are actually being used. 
+
+		theta1 = Mathf.PI / 2;
+		theta2 = Mathf.PI / 2;
+		theta3 = Mathf.PI / 2;
+		/*theta4 = Mathf.PI / 2;
+		theta5 = Mathf.PI / 2;
+		theta6 = Mathf.PI / 2;*/
+
+		// Debug.Log ("theta1 is: " + theta1);
+		/*Debug.Log ("theta2 is: " + theta2);
+		Debug.Log ("theta3 is: " + theta3);
+		Debug.Log ("theta4 is: " + theta4);
+		Debug.Log ("theta5 is: " + theta5);
+		Debug.Log ("theta6 is: " + theta6);
+		*/
+
+		Debug.Log ("Factor1 is: " + factor1);
+		Debug.Log ("Factor2 is: " + factor2);
+		Debug.Log ("Factor3 is: " + factor3);
+		Debug.Log ("Factor4 is: " + factor4);
+
+
+		Debug.Log ("Factor5 is: " + factor5);
+		Debug.Log ("Factor6 is: " + factor6);
+		Debug.Log ("Factor7 is: " + factor7);
+		Debug.Log ("Factor8 is: " + factor8);
+
+
+		if (true) {
+			axis_base = Mathf.Rad2Deg * theta1;
+			axis_lower = Mathf.Rad2Deg * theta2;
+			axis_upper_back = Mathf.Rad2Deg * theta3;
+			axis_upper_front = Mathf.Rad2Deg * theta4;
+			axis_wrist = Mathf.Rad2Deg * theta5;
+			axis_seat = theta6;
+		}
+
 	}
 
 	// Due to the limited vector and matrix size in Unity... I cannot create a good function. This is just made to clear out the structure

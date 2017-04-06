@@ -10,7 +10,7 @@ public class CameraViewSwitcher : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		//PosFirstPerson = transform.localPosition;
+		
 	}
 	
 	// Update is called once per frame
