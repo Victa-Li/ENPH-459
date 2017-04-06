@@ -9,9 +9,9 @@ public class FeedBackSimulateOnCube : MonoBehaviour
     public static float x = 0;
     public static float y = 0;
     public static float z = 0;
-    public static float anglex = 0;
-    public static float angley = 0;
-    public static float anglez = 0;
+    public static float angleA = 0;
+    public static float angleB = 0;
+    public static float angleC = 0;
     private Vector3 position ;
     private Vector3 axisx= new Vector3(1,0,0);
     private Vector3 axisy= new Vector3(0,1,0);
@@ -27,7 +27,6 @@ public class FeedBackSimulateOnCube : MonoBehaviour
 	void Update () {
         position=new Vector3(x,y,z);
 	    transform.localPosition = position;
-	    transform.localRotation = Quaternion.AngleAxis(anglez, axisy);
-        transform.localRotation = Quaternion.AngleAxis( angley,axisz)* Quaternion.AngleAxis(anglex, axisx);
+	    transform.localRotation = Quaternion.AngleAxis(-angleC, axisy) * Quaternion.AngleAxis(-angleB, axisz) * Quaternion.AngleAxis(-angleA, axisx);
     }
 }

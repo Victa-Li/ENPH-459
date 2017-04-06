@@ -150,11 +150,11 @@ public class EthernetIOManger : MonoBehaviour
                 doc.LoadXml(received_data);
                 XmlNode newPos = doc.DocumentElement.SelectSingleNode("/Rob/RIst");
                 FeedBackSimulateOnCube.x = (float)Convert.ToDouble(newPos.Attributes["X"].Value);
-                FeedBackSimulateOnCube.y = (float)Convert.ToDouble(newPos.Attributes["Y"].Value);
-                FeedBackSimulateOnCube.z = (float)Convert.ToDouble(newPos.Attributes["Z"].Value);
-                FeedBackSimulateOnCube.anglex = (float)Convert.ToDouble(newPos.Attributes["A"].Value);
-                FeedBackSimulateOnCube.angley = (float)Convert.ToDouble(newPos.Attributes["B"].Value);
-                FeedBackSimulateOnCube.anglez = (float)Convert.ToDouble(newPos.Attributes["C"].Value);
+                FeedBackSimulateOnCube.z = (float)Convert.ToDouble(newPos.Attributes["Y"].Value);
+                FeedBackSimulateOnCube.y = (float)Convert.ToDouble(newPos.Attributes["Z"].Value);
+                FeedBackSimulateOnCube.angleA = (float)Convert.ToDouble(newPos.Attributes["A"].Value);
+                FeedBackSimulateOnCube.angleB = (float)Convert.ToDouble(newPos.Attributes["B"].Value);
+                FeedBackSimulateOnCube.angleC = (float)Convert.ToDouble(newPos.Attributes["C"].Value);
                
             }
             catch (Exception e)
