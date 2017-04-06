@@ -25,30 +25,16 @@ public class EthernetIOManger : MonoBehaviour
 
     private Thread tid1;
     private bool threadflag;
-    public ForceSimulator fs;
-
-    // Parameters used for limiting
-    private const float RSIStep = 0.004f; // in seconds
-    private const float maxJerk = 10f; // mm / s^3
-    private const float maxAccel = 10f; // mm / s^2
-    private const float maxVel = 2f; // mm / s
-    private const float maxJerkAngle = 10f; // deg / s^3
-    private const float maxAccelAngle = 10f; // deg / s^2
-    private const float maxVelAngle = 2f; // deg / s
-    //private float currentJerk;
-    //private float currentAccel;
-    //private float currentVel;
-    private const bool useJerk = false;
-    private Vector3 lastPosition;
-    private Vector3 lastRotation;
-
-    private Vector3 pos_copy;
-    private Vector3 rot_copy;
-
+    RobotArmControl robotArm;
+    public static string testoutput;
+    public static string testsend;
     // Use this for initialization
     void Start()
     {
+        robotArm = GameObject.Find("Robot Arm").GetComponent<RobotArmControl>();
         threadflag = true;
+        testoutput = "0";
+        testsend = "0";
         tid1 = new Thread(Thread1);
         tid1.Priority = System.Threading.ThreadPriority.Highest;
         tid1.Start();
@@ -57,7 +43,7 @@ public class EthernetIOManger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
 
     public void Thread1()
@@ -83,6 +69,7 @@ public class EthernetIOManger : MonoBehaviour
         {  }
 
         string[] stringSeparators = new string[] { "<IPOC>", "</IPOC>" };
+        string[] stringSeparators1 = new string[] { "<TestOutput>", "</TestOutput>" };
 
         try
         {
@@ -90,7 +77,9 @@ public class EthernetIOManger : MonoBehaviour
             received_data = Encoding.ASCII.GetString(receive_byte_array, 0, receive_byte_array.Length);
             
             string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
+            string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
             timestamp = temp[1];
+            testoutput = temp1[1];
 
             Debug.Log("received");
         }
@@ -105,9 +94,9 @@ public class EthernetIOManger : MonoBehaviour
         Settings.NewLineOnAttributes = true;
         Settings.Indent = true;
         Settings.IndentChars = "";
-        String position = "RKorr X=\"" + 0 + "\" Y=\"" + 0 + "\" Z=\"" + 0 +
-                           "\" A=\"" + 0 + "\" B=\"" + 0 + "\" C=\"" + 0 +
-                           "\"";
+        String position = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
+                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+                        "\"";
         string text;
         using (TextWriter textWriter = new Utf8StringWriter())
         {
@@ -116,12 +105,12 @@ public class EthernetIOManger : MonoBehaviour
            
                 xmlWriter.WriteStartElement("Sen");
                 xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
-                xmlWriter.WriteElementString("EStr", "Message from Unity");
+                xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
                 xmlWriter.WriteElementString(
                 "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                 "");
                 xmlWriter.WriteElementString(position, "");
-                xmlWriter.WriteElementString("TestOutput", "1");
+                xmlWriter.WriteElementString("TestOutput", testsend);
                 xmlWriter.WriteElementString("IPOC", timestamp);
                 
                 xmlWriter.WriteEndElement();
@@ -154,8 +143,21 @@ public class EthernetIOManger : MonoBehaviour
                 count = 0;
                 string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
                 timestamp = temp[1];
+                string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
+                testoutput = temp1[1];
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(received_data);
+                XmlNode newPos = doc.DocumentElement.SelectSingleNode("/Rob/RIst");
+                FeedBackSimulateOnCube.x = (float)Convert.ToDouble(newPos.Attributes["X"].Value);
+                FeedBackSimulateOnCube.z = (float)Convert.ToDouble(newPos.Attributes["Y"].Value);
+                FeedBackSimulateOnCube.y = (float)Convert.ToDouble(newPos.Attributes["Z"].Value);
+                FeedBackSimulateOnCube.angleA = (float)Convert.ToDouble(newPos.Attributes["A"].Value);
+                FeedBackSimulateOnCube.angleB = (float)Convert.ToDouble(newPos.Attributes["B"].Value);
+                FeedBackSimulateOnCube.angleC = (float)Convert.ToDouble(newPos.Attributes["C"].Value);
+               
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Debug.LogWarning("Failed to recieve packet!");
                 count++;
@@ -164,46 +166,10 @@ public class EthernetIOManger : MonoBehaviour
 
             try
             {
-                lock (fs.pos_rot_Lock)
-                {
-                    pos_copy = fs.current_position;
-                    rot_copy = fs.current_rotation.eulerAngles;
-                }
-                // Limit position and rotation updates
-                Vector3 newPosition;
-                Vector3 newRotation;
-                if (useJerk)
-                {
-                    // TODO: implement this once inverse kinematics is done
-                }
-                else
-                {
-                    newPosition = Vector3.MoveTowards(lastPosition, pos_copy, maxVel * RSIStep);
-                    if (!(Mathf.Approximately(newPosition.x, lastPosition.x) &&
-                        Mathf.Approximately(newPosition.y, lastPosition.y) &&
-                        Mathf.Approximately(newPosition.z, lastPosition.z)))
-                    {
-                        Debug.LogWarning("Limited position!");
-                    }
-                    // Rotate angles, MoveTowardsAngle should take of rotation of angles around 360
-                    newRotation.x = Mathf.MoveTowardsAngle(lastRotation.x, rot_copy.x, maxVelAngle * RSIStep);
-                    newRotation.y = Mathf.MoveTowardsAngle(lastRotation.y, rot_copy.y, maxVelAngle * RSIStep);
-                    newRotation.z = Mathf.MoveTowardsAngle(lastRotation.z, rot_copy.z, maxVelAngle * RSIStep);
 
-                    if (!(Mathf.Approximately(newRotation.x, lastRotation.x) &&
-                        Mathf.Approximately(newRotation.y, lastRotation.y) &&
-                        Mathf.Approximately(newRotation.z, lastRotation.z)))
-                    {
-                        Debug.LogWarning("Limited rotation!");
-                    }
-                    lastPosition = newPosition;
-                    lastRotation = newRotation;
-                }
-                // Generate string to send
-                String position1 = "RKorr X=\"" + newPosition.x + "\" Y=\"" + newPosition.z + "\" Z=\"" + newPosition.y +
-                           "\" A=\"" + newRotation.x + "\" B=\"" + newRotation.y + "\" C=\"" + newRotation.z +
-                           "\"";
-
+                String position1 = "RKorr X=\"" + robotArm.RA_x + "\" Y=\"" + robotArm.RA_z + "\" Z=\"" + robotArm.RA_y +
+                        "\" A=\"" + (robotArm.RA_yaw) + "\" B=\"" + (robotArm.RA_roll) + "\" C=\"" + (robotArm.RA_pitch) +
+                        "\"";
                 string text1;
                 using (TextWriter textWriter = new Utf8StringWriter())
                 {
@@ -211,12 +177,12 @@ public class EthernetIOManger : MonoBehaviour
                     {
                         xmlWriter.WriteStartElement("Sen");
                         xmlWriter.WriteAttributeString(null, "Type", null, "ImFree");
-                        xmlWriter.WriteElementString("EStr", "Message from Unity");
+                        xmlWriter.WriteElementString("EStr", "Message from RSI TestServer");
                         xmlWriter.WriteElementString(
                             "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                             "");
                         xmlWriter.WriteElementString(position1, "");
-                        xmlWriter.WriteElementString("TestOutput", "1");
+                        xmlWriter.WriteElementString("TestOutput", testsend);
                         xmlWriter.WriteElementString("IPOC", timestamp);
                       
                         xmlWriter.WriteEndElement();

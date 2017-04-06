@@ -35,6 +35,11 @@ public class RobotArmControl : MonoBehaviour {
 	private readonly Vector3 segment2 = new Vector3 (0.8f, 0.0f, 0.0f); // From Kuka-Axis 2 to Kuka-Axis 3
 	private readonly Vector3 segment3 = new Vector3 (0.95f, 0.0f, 0.0f); // From Kuka-Axis 3 to Kuka-Axis 5
 	private readonly Vector3 segment4 = new Vector3 (0.25f, 0.0f, 0.0f); // From Kuka-Axis 5 to seat origin
+    
+    //StreamWriter writer = new StreamWriter("robot.xml");
+
+
+    //private scaleByAcceleration sbaScript;
 
     // Use this for initialization
     void Start () {
@@ -57,7 +62,10 @@ public class RobotArmControl : MonoBehaviour {
 				RobotArm_wrist_peice = RA_parts [i].gameObject;
 			else if (RA_parts[i].name == "seat")
 				RobotArm_seat = RA_parts[i].gameObject;
+            
+			
 		}
+
        
         if (RobotArm_base != null
 		    && RobotArm_main_rotor != null
@@ -72,11 +80,19 @@ public class RobotArmControl : MonoBehaviour {
         } else {
 			Debug.LogError ("Robot arm not initialized!");
 		}
+
+
+
+
 	}
+
+
 
     // Update is called once per frame
     void Update ()
 	{
+       
+
 
 	}
 
@@ -84,7 +100,7 @@ public class RobotArmControl : MonoBehaviour {
       
 		if (RA_complete) {
 
-			setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
+				setCoords(-RA_x, RA_z, RA_y, RA_pitch, RA_roll, RA_yaw);
 			setAxes (axis_base, axis_lower, axis_upper, axis_wrist, axis_seat);
 
 			if (axis_seat < 180.0f)
@@ -101,6 +117,8 @@ public class RobotArmControl : MonoBehaviour {
 			axis_wrist += axis_wrist_offset;
 			axis_seat += axis_seat_offset;
 		}
+	    
+       
 	}
 
 	// All axes are in degrees

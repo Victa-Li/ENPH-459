@@ -168,9 +168,7 @@ namespace KRCSimulator
                         B = Convert.ToDouble(newPos.Attributes["B"].Value);
                         C = Convert.ToDouble(newPos.Attributes["C"].Value);
                         XmlNode newTestOutput = doc.DocumentElement.SelectSingleNode("/Sen/TestOutput");
-                        Console.WriteLine("New value: " + newTestOutput.InnerText);
-                        Console.WriteLine("other values: " + X + " " + Y + " " + Z);
-                        testOutput = Convert.ToInt32(newTestOutput.InnerText);
+                        testOutput = Convert.ToInt32(newTestOutput.Value);
                     }
                     catch (Exception e)
                     {

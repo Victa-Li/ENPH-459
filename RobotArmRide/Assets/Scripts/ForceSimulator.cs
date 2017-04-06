@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+
+
 public class ForceSimulator : MonoBehaviour {
 
 	public Vector3 testVector;
@@ -12,15 +14,6 @@ public class ForceSimulator : MonoBehaviour {
 
     public Vector3 feltAccel;
     public Vector3 seatAccel;
-    public Vector3 seatAccet_rotFrame; // Seat acceleration in the rotated frame due to orientation of the car
-
-    public Target_helper target_helper;
-    public Quaternion rotation_no_y;
-        
-    // Synchronization lock due to sharing of x, y, z, A, B, C values between unity main thread and ethernet communication thread
-    public Object pos_rot_Lock = new Object();
-    public Vector3 current_position;
-    public Quaternion current_rotation;
 
     //***************************************//
     //*** Acceleration Mapping Parameters ***//
@@ -132,6 +125,7 @@ public class ForceSimulator : MonoBehaviour {
         returnPosition = transform.position;
         rb = GetComponent<Rigidbody>();
         RobotArm = GetComponentInParent<RobotArmControl>();
+        
 	}
 	
 	void FixedUpdate () {
@@ -188,7 +182,6 @@ public class ForceSimulator : MonoBehaviour {
             localAccel.z = accelerationLimit.z;
         if (localAccel.z < -accelerationLimit.z)
             localAccel.z = -accelerationLimit.z;
-
         //****************************//
         //*** Acceleration Mapping ***//
         //****************************//
@@ -200,7 +193,7 @@ public class ForceSimulator : MonoBehaviour {
         //*** Impulse simulation up-down ***//
         //**********************************//
         if (Mathf.Abs(localAccel.y) > ISverticalThreshold)
-            rb.AddForce(target_helper.transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
+            rb.AddForce(transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
         
         Vector3 returnStep = Vector3.zero;
         float d_x = transform.position.x - returnPosition.x;
@@ -208,19 +201,23 @@ public class ForceSimulator : MonoBehaviour {
         float d_z = transform.position.z - returnPosition.z;
 
         if (Mathf.Abs(d_x) > ISverticalReturnSpeed / 2)
+            //    returnStep.x = -Mathf.Sign(d_x);
+            //else
             returnStep.x = Mathf.Lerp(-Mathf.Sign(d_x), 0, 0.5f);
         if (Mathf.Abs(d_y) > ISverticalReturnSpeed / 2)
+            //    returnStep.y = -Mathf.Sign(d_y);
+            //else
             returnStep.y = Mathf.Lerp(-Mathf.Sign(d_y), 0, 0.5f);
         if (Mathf.Abs(d_z) > ISverticalReturnSpeed / 2)
+            //    returnStep.z = -Mathf.Sign(d_z);
+            //else
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
-
-        // Update position and rotation
         transform.Translate(returnStep * ISverticalReturnSpeed);
         //****************//
         //*** Rotation ***//
         //****************//
         Vector3 temp = mc.transform.rotation.eulerAngles;
-        rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
+        Quaternion rotation_no_y = Quaternion.Euler(new Vector3(temp.z, 0, -temp.x));
         transform.rotation = rotation_no_y * AM_rotation;
 
         // Calculate the expected "felt" acceleration:
@@ -230,13 +227,7 @@ public class ForceSimulator : MonoBehaviour {
         LinearAcceleration(out seatAccel, transform.position, seatAccelSamples);
 
         testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);
-        
-        lock (pos_rot_Lock)
-        {
-            current_position = transform.position;
-            current_rotation = transform.rotation;
-        }
-    }
+	}
 }
 
 

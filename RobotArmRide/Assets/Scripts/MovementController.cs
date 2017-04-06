@@ -4,7 +4,6 @@ using System.Collections;
 /// <summary>
 /// Generic movement controller for the player. Should be inherited for a specific vehicle type.
 /// </summary>
-[RequireComponent(typeof(PlayerMover))]
 public class MovementController : MonoBehaviour {
 
 	Vector3 initPlayerPos;
@@ -37,7 +36,7 @@ public class MovementController : MonoBehaviour {
     public int linearVelocitySamples = 10;
     public int angularVelocitySamples = 10;
 
-    private PlayerMover pm; 
+    public PlayerMover pm; 
 
 	// Use this for initialization
 	void Start () {
@@ -72,5 +71,17 @@ public class MovementController : MonoBehaviour {
 	{
 		pm.transform.position = initPlayerPos;
         pm.transform.rotation = initPlayerRot;
+    }
+
+    public void settestoutput()
+    {
+        if (EthernetIOManger.testsend.Equals("0"))
+        {
+            EthernetIOManger.testsend = "1";
+        }
+        else
+        {
+            EthernetIOManger.testsend = "0";
+        }
     }
 }
