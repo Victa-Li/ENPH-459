@@ -30,7 +30,7 @@
       <Parameter Name="UpperLimX" ParamID="4" ParamValue="200" />
       <Parameter Name="UpperLimY" ParamID="5" ParamValue="200" />
       <Parameter Name="UpperLimZ" ParamID="6" ParamValue="200" />
-      <Parameter Name="MaxRotAngle" ParamID="7" ParamValue="30" />
+      <Parameter Name="MaxRotAngle" ParamID="7" ParamValue="90" />
       <Parameter Name="RefCorrSys" ParamID="1" ParamValue="1" IsRuntime="false" />
     </Parameters>
   </RSIObject>
@@ -95,6 +95,12 @@
     <Parameters>
       <Parameter Name="Index" ParamID="1" ParamValue="3" />
       <Parameter Name="DataSize" ParamID="2" ParamValue="0" />
+    </Parameters>
+  </RSIObject>
+  <RSIObject ObjType="POSCORRMON" ObjTypeID="81" ObjID="POSCORRMON1">
+    <Parameters>
+      <Parameter Name="MaxTrans" ParamID="1" ParamValue="200" />
+      <Parameter Name="MaxRotAngle" ParamID="2" ParamValue="90" />
     </Parameters>
   </RSIObject>
 </RSIObjects>

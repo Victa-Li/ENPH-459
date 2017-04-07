@@ -31,10 +31,10 @@ public class EthernetIOManger : MonoBehaviour
     private const float RSIStep = 0.004f; // in seconds
     private const float maxJerk = 10f; // mm / s^3
     private const float maxAccel = 10f; // mm / s^2
-    private const float maxVel = 2f; // mm / s
+    private const float maxVel = 3f; // mm / cycle
     private const float maxJerkAngle = 10f; // deg / s^3
     private const float maxAccelAngle = 10f; // deg / s^2
-    private const float maxVelAngle = 2f; // deg / s
+    private const float maxVelAngle = 0.05f; // deg / cycle
     //private float currentJerk;
     //private float currentAccel;
     //private float currentVel;
@@ -44,6 +44,8 @@ public class EthernetIOManger : MonoBehaviour
 
     private Vector3 pos_copy;
     private Vector3 rot_copy;
+    private Vector3 rot_last = Vector3.zero;
+    private Vector3 pos_last = Vector3.zero;
 
     // Use this for initialization
     void Start()
@@ -164,44 +166,56 @@ public class EthernetIOManger : MonoBehaviour
 
             try
             {
-                lock (fs.pos_rot_Lock)
-                {
+                //lock (fs.pos_rot_Lock)
+                //{
                     pos_copy = fs.current_position;
+                    pos_copy.y -= 0.89f;
+                    pos_copy *= 200;
                     rot_copy = fs.current_rotation.eulerAngles;
-                }
+                //}
                 // Limit position and rotation updates
                 Vector3 newPosition;
                 Vector3 newRotation;
-                if (useJerk)
+                if (false)
                 {
+                    newPosition = pos_copy;
+                    newRotation = rot_copy;
                     // TODO: implement this once inverse kinematics is done
                 }
                 else
                 {
-                    newPosition = Vector3.MoveTowards(lastPosition, pos_copy, maxVel * RSIStep);
-                    if (!(Mathf.Approximately(newPosition.x, lastPosition.x) &&
-                        Mathf.Approximately(newPosition.y, lastPosition.y) &&
-                        Mathf.Approximately(newPosition.z, lastPosition.z)))
-                    {
-                        Debug.LogWarning("Limited position!");
-                    }
+                    newPosition = Vector3.MoveTowards(lastPosition, pos_copy, maxVel);
+                    //if (!(Mathf.Approximately(newPosition.x, lastPosition.x) &&
+                    //    Mathf.Approximately(newPosition.y, lastPosition.y) &&
+                    //    Mathf.Approximately(newPosition.z, lastPosition.z)))
+                    //{
+                    //    Debug.LogWarning("Limited position!");
+                    //}
                     // Rotate angles, MoveTowardsAngle should take of rotation of angles around 360
-                    newRotation.x = Mathf.MoveTowardsAngle(lastRotation.x, rot_copy.x, maxVelAngle * RSIStep);
-                    newRotation.y = Mathf.MoveTowardsAngle(lastRotation.y, rot_copy.y, maxVelAngle * RSIStep);
-                    newRotation.z = Mathf.MoveTowardsAngle(lastRotation.z, rot_copy.z, maxVelAngle * RSIStep);
+                    if (Mathf.Abs(rot_copy.x - rot_last.x) > 180)
+                        rot_copy.x -= 360 * Mathf.Sign(rot_copy.x - rot_last.x);
+                    if (Mathf.Abs(rot_copy.y - rot_last.y) > 180)
+                        rot_copy.y -= 360 * Mathf.Sign(rot_copy.y - rot_last.y);
+                    if (Mathf.Abs(rot_copy.z - rot_last.z) > 180)
+                        rot_copy.z -= 360 * Mathf.Sign(rot_copy.z - rot_last.z);
+                    rot_last = rot_copy;
+                    newRotation = Vector3.zero;
+                    newRotation.x = Mathf.MoveTowardsAngle(lastRotation.x, rot_copy.x, maxVelAngle);
+                    newRotation.y = Mathf.MoveTowardsAngle(lastRotation.y, rot_copy.y, maxVelAngle);
+                    newRotation.z = Mathf.MoveTowardsAngle(lastRotation.z, rot_copy.z, maxVelAngle);
 
-                    if (!(Mathf.Approximately(newRotation.x, lastRotation.x) &&
-                        Mathf.Approximately(newRotation.y, lastRotation.y) &&
-                        Mathf.Approximately(newRotation.z, lastRotation.z)))
-                    {
-                        Debug.LogWarning("Limited rotation!");
-                    }
+                    //if (!(Mathf.Approximately(newRotation.x, lastRotation.x) &&
+                    //    Mathf.Approximately(newRotation.y, lastRotation.y) &&
+                    //    Mathf.Approximately(newRotation.z, lastRotation.z)))
+                    //{
+                    //    Debug.LogWarning("Limited rotation!");
+                    //}
                     lastPosition = newPosition;
                     lastRotation = newRotation;
                 }
                 // Generate string to send
-                String position1 = "RKorr X=\"" + newPosition.x + "\" Y=\"" + newPosition.z + "\" Z=\"" + newPosition.y +
-                           "\" A=\"" + newRotation.x + "\" B=\"" + newRotation.y + "\" C=\"" + newRotation.z +
+                String position1 = "RKorr X=\"" + string.Format("{0:0.00}", newPosition.x) + "\" Y=\"" + string.Format("{0:0.00}", newPosition.z) + "\" Z=\"" + string.Format("{0:0.00}", newPosition.y) +
+                           "\" A=\"" + string.Format("{0:0.00}", newRotation.x) + "\" B=\"" + string.Format("{0:0.00}", newRotation.y) + "\" C=\"" + string.Format("{0:0.00}", newRotation.z) +
                            "\"";
 
                 string text1;

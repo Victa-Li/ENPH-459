@@ -737,6 +737,7 @@ GameObject:
   - component: {fileID: 223089098}
   - component: {fileID: 223089097}
   - component: {fileID: 223089099}
+  - component: {fileID: 223089100}
   m_Layer: 0
   m_Name: Main Controller
   m_TagString: Untagged
@@ -791,6 +792,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98e6b67308c889042826c873abf52e36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  fs: {fileID: 1274233953}
+--- !u!114 &223089100
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 223089096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27abe74770f596a49b941a71b044f105, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outfile: 
+  mc: {fileID: 712564404}
   fs: {fileID: 1274233953}
 --- !u!1 &254313188
 GameObject:
@@ -2252,7 +2267,6 @@ MonoBehaviour:
   angularAccelerationSamples: 10
   linearVelocitySamples: 10
   angularVelocitySamples: 2
-  pm: {fileID: 0}
 --- !u!4 &731391743 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4000011995070676, guid: 0d824cfe31ec89245898bef2a35449f9,
@@ -3769,7 +3783,7 @@ MonoBehaviour:
   m_MaximumSteerAngle: 18
   m_SteerHelper: 0.575
   m_TractionControl: 1
-  m_FullTorqueOverAllWheels: 2500
+  m_FullTorqueOverAllWheels: 1000
   m_ReverseTorque: 1000
   m_MaxHandbrakeTorque: 1000
   m_Downforce: 100
@@ -3983,7 +3997,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1274233951}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.8, y: 0.9, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 737403925}
@@ -4004,7 +4018,7 @@ MonoBehaviour:
   mc: {fileID: 712564404}
   exaggeration: 1
   localAccel: {x: 0, y: 0, z: 0}
-  accelerationLimit: {x: 50, y: 50, z: 50}
+  accelerationLimit: {x: 10, y: 29, z: 10}
   feltAccel: {x: 0, y: 0, z: 0}
   seatAccel: {x: 0, y: 0, z: 0}
   seatAccet_rotFrame: {x: 0, y: 0, z: 0}
@@ -4622,7 +4636,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1482464860
 Transform:
   m_ObjectHideFlags: 0

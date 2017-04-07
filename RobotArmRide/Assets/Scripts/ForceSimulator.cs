@@ -231,11 +231,11 @@ public class ForceSimulator : MonoBehaviour {
 
         testVector = new Vector3 (transform.rotation.eulerAngles.x % 360.0f, transform.rotation.eulerAngles.y % 360.0f, transform.rotation.eulerAngles.z % 360.0f);
         
-        lock (pos_rot_Lock)
-        {
-            current_position = transform.position;
-            current_rotation = transform.rotation;
-        }
+        //lock (pos_rot_Lock)
+        //{
+            current_position = transform.localPosition;
+            current_rotation = transform.localRotation;
+        //}
     }
 }
 
