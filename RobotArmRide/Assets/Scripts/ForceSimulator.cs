@@ -36,9 +36,9 @@ public class ForceSimulator : MonoBehaviour {
     public float ISverticalThreshold = 1;
     public float ISlimitMultiplier = 1;
     // IS Limits:
-    private float[] r_limits = { 0.3f, 0.5f, 1.7f, 1.9f };
-    private float[] theta_limits = { -130f, -110f, 110f, 130f };
-    private float[] phi_limits = { 5f, 15f, 125f, 135f };
+    private float[] r_limits = { 0.4f, 0.6f };
+    //private float[] theta_limits = { -130f, -110f, 110f, 130f };
+    //private float[] phi_limits = { 5f, 15f, 125f, 135f };
     // position in spherical coordinates
     public float r;
     public float theta;
