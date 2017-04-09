@@ -23,7 +23,9 @@ public class UITextUpdater : MonoBehaviour {
             "Seat Accel:    " + string.Format("{0:0.00}", fs.seatAccet_rotFrame.x) + ", "
             + string.Format("{0:0.00}", fs.seatAccet_rotFrame.y) + ", " + string.Format("{0:0.00}", fs.seatAccet_rotFrame.z) + "\n" +
             "Total Accel:   " + string.Format("{0:0.00}", fs.seatAccet_rotFrame.x+fs.feltAccel.x) + ", "
-            + string.Format("{0:0.00}", fs.seatAccet_rotFrame.y+fs.feltAccel.y) + ", " + string.Format("{0:0.00}", fs.seatAccet_rotFrame.z+fs.feltAccel.z);
+            + string.Format("{0:0.00}", fs.seatAccet_rotFrame.y+fs.feltAccel.y) + ", " + string.Format("{0:0.00}", fs.seatAccet_rotFrame.z+fs.feltAccel.z) + "\n"
+            + "output(receive):   " + string.Format(EthernetIOManger.testoutput) + "\n"
+            + "output(send):   " + string.Format(EthernetIOManger.testsend);
 
     }
 }

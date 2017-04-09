@@ -26,6 +26,8 @@ public class EthernetIOManger : MonoBehaviour
     private Thread tid1;
     private bool threadflag;
     public ForceSimulator fs;
+    public static string testoutput;
+    public static string testsend;
 
     // Parameters used for limiting
     private const float RSIStep = 0.004f; // in seconds
@@ -54,6 +56,8 @@ public class EthernetIOManger : MonoBehaviour
         tid1 = new Thread(Thread1);
         tid1.Priority = System.Threading.ThreadPriority.Highest;
         tid1.Start();
+        testoutput = "0";
+        testsend = "0";
     }
 
     // Update is called once per frame
@@ -85,6 +89,7 @@ public class EthernetIOManger : MonoBehaviour
         {  }
 
         string[] stringSeparators = new string[] { "<IPOC>", "</IPOC>" };
+        string[] stringSeparators1 = new string[] { "<TestOutput>", "</TestOutput>" };
 
         try
         {
@@ -123,7 +128,7 @@ public class EthernetIOManger : MonoBehaviour
                 "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                 "");
                 xmlWriter.WriteElementString(position, "");
-                xmlWriter.WriteElementString("TestOutput", "1");
+                xmlWriter.WriteElementString("TestOutput", testsend);
                 xmlWriter.WriteElementString("IPOC", timestamp);
                 
                 xmlWriter.WriteEndElement();
@@ -156,6 +161,18 @@ public class EthernetIOManger : MonoBehaviour
                 count = 0;
                 string[] temp = received_data.Split(stringSeparators, StringSplitOptions.None);
                 timestamp = temp[1];
+                string[] temp1 = received_data.Split(stringSeparators1, StringSplitOptions.None);
+                testoutput = temp1[1];
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(received_data);
+                XmlNode newPos = doc.DocumentElement.SelectSingleNode("/Rob/RIst");
+                FeedBackSimulateOnCube.x = (float)Convert.ToDouble(newPos.Attributes["X"].Value);
+                FeedBackSimulateOnCube.z = (float)Convert.ToDouble(newPos.Attributes["Y"].Value);
+                FeedBackSimulateOnCube.y = (float)Convert.ToDouble(newPos.Attributes["Z"].Value);
+                FeedBackSimulateOnCube.angleA = (float)Convert.ToDouble(newPos.Attributes["A"].Value);
+                FeedBackSimulateOnCube.angleB = (float)Convert.ToDouble(newPos.Attributes["B"].Value);
+                FeedBackSimulateOnCube.angleC = (float)Convert.ToDouble(newPos.Attributes["C"].Value);
             }
             catch (Exception)
             {
@@ -230,7 +247,7 @@ public class EthernetIOManger : MonoBehaviour
                             "Tech T21=\"1.09\" T22=\"2.08\" T23=\"3.07\" T24=\"4.06\" T25=\"5.05\" T26=\"6.04\" T27=\"7.03\" T28=\"8.02\" T29=\"9.01\" T210=\"10.00\"",
                             "");
                         xmlWriter.WriteElementString(position1, "");
-                        xmlWriter.WriteElementString("TestOutput", "1");
+                        xmlWriter.WriteElementString("TestOutput", testsend);
                         xmlWriter.WriteElementString("IPOC", timestamp);
                       
                         xmlWriter.WriteEndElement();
@@ -262,6 +279,18 @@ public class EthernetIOManger : MonoBehaviour
         threadflag = false;
         tid1.Join();
         tid1.Abort();
+    }
+
+    public void setTestOutput()
+    {
+        if (testsend.Equals("0"))
+        {
+            testsend = "1";
+        }
+        else
+        {
+            testsend = "0";
+        }
     }
 
 }
