@@ -24,38 +24,14 @@
       <Input InIdx="6" OutObjID="PID6" OutIdx="1" />
     </Inputs>
     <Parameters>
-      <Parameter Name="LowerLimX" ParamID="1" ParamValue="-200" />
-      <Parameter Name="LowerLimY" ParamID="2" ParamValue="-200" />
-      <Parameter Name="LowerLimZ" ParamID="3" ParamValue="-200" />
-      <Parameter Name="UpperLimX" ParamID="4" ParamValue="200" />
-      <Parameter Name="UpperLimY" ParamID="5" ParamValue="200" />
-      <Parameter Name="UpperLimZ" ParamID="6" ParamValue="200" />
+      <Parameter Name="LowerLimX" ParamID="1" ParamValue="-300" />
+      <Parameter Name="LowerLimY" ParamID="2" ParamValue="-300" />
+      <Parameter Name="LowerLimZ" ParamID="3" ParamValue="-300" />
+      <Parameter Name="UpperLimX" ParamID="4" ParamValue="300" />
+      <Parameter Name="UpperLimY" ParamID="5" ParamValue="300" />
+      <Parameter Name="UpperLimZ" ParamID="6" ParamValue="300" />
       <Parameter Name="MaxRotAngle" ParamID="7" ParamValue="90" />
       <Parameter Name="RefCorrSys" ParamID="1" ParamValue="1" IsRuntime="false" />
-    </Parameters>
-  </RSIObject>
-  <RSIObject ObjType="MAP2SEN_PREA" ObjTypeID="17" ObjID="MAP2SEN_PREA1">
-    <Inputs>
-      <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="1" />
-    </Inputs>
-    <Parameters>
-      <Parameter Name="Index" ParamID="1" ParamValue="1" />
-    </Parameters>
-  </RSIObject>
-  <RSIObject ObjType="MAP2SEN_PREA" ObjTypeID="17" ObjID="MAP2SEN_PREA2">
-    <Inputs>
-      <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="2" />
-    </Inputs>
-    <Parameters>
-      <Parameter Name="Index" ParamID="1" ParamValue="2" />
-    </Parameters>
-  </RSIObject>
-  <RSIObject ObjType="MAP2SEN_PREA" ObjTypeID="17" ObjID="MAP2SEN_PREA3">
-    <Inputs>
-      <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="3" />
-    </Inputs>
-    <Parameters>
-      <Parameter Name="Index" ParamID="1" ParamValue="3" />
     </Parameters>
   </RSIObject>
   <RSIObject ObjType="MONITOR" ObjTypeID="55" ObjID="MONITOR1">
@@ -99,7 +75,7 @@
   </RSIObject>
   <RSIObject ObjType="POSCORRMON" ObjTypeID="81" ObjID="POSCORRMON1">
     <Parameters>
-      <Parameter Name="MaxTrans" ParamID="1" ParamValue="200" />
+      <Parameter Name="MaxTrans" ParamID="1" ParamValue="300" />
       <Parameter Name="MaxRotAngle" ParamID="2" ParamValue="90" />
     </Parameters>
   </RSIObject>

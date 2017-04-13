@@ -64,50 +64,14 @@
         <rSIOutPort name="C" />
       </rSIOutPorts>
       <rSIParameters>
-        <rSIParameter name="LowerLimX" value="-200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="LowerLimY" value="-200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="LowerLimZ" value="-200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="UpperLimX" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="UpperLimY" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="UpperLimZ" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="LowerLimX" value="-300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
+        <rSIParameter name="LowerLimY" value="-300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
+        <rSIParameter name="LowerLimZ" value="-300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="3" />
+        <rSIParameter name="UpperLimX" value="300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="4" />
+        <rSIParameter name="UpperLimY" value="300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
+        <rSIParameter name="UpperLimZ" value="300" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
         <rSIParameter name="MaxRotAngle" value="90" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="7" />
         <rSIParameter name="RefCorrSys" value="Base" paramType="KUKA.RSIVisual.RSI_TrafoCosys" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
-      </rSIParameters>
-    </rSIElement>
-    <rSIElement name="MAP2SEN_PREA1" objType="MAP2SEN_PREA" objTypeID="17" maxInputs="0" maxOutputs="0">
-      <rSIInPorts>
-        <rSIInPort name="In1">
-          <source>
-            <rSIOutPortMoniker name="//ETHERNET1/Out1" />
-          </source>
-        </rSIInPort>
-      </rSIInPorts>
-      <rSIParameters>
-        <rSIParameter name="Index" value="1" paramType="System.Int32" minVal="1" maxVal="20" isEnum="false" index="1" />
-      </rSIParameters>
-    </rSIElement>
-    <rSIElement name="MAP2SEN_PREA2" objType="MAP2SEN_PREA" objTypeID="17" maxInputs="0" maxOutputs="0">
-      <rSIInPorts>
-        <rSIInPort name="In1">
-          <source>
-            <rSIOutPortMoniker name="//ETHERNET1/Out2" />
-          </source>
-        </rSIInPort>
-      </rSIInPorts>
-      <rSIParameters>
-        <rSIParameter name="Index" value="2" paramType="System.Int32" minVal="1" maxVal="20" isEnum="false" index="1" />
-      </rSIParameters>
-    </rSIElement>
-    <rSIElement name="MAP2SEN_PREA3" objType="MAP2SEN_PREA" objTypeID="17" maxInputs="0" maxOutputs="0">
-      <rSIInPorts>
-        <rSIInPort name="In1">
-          <source>
-            <rSIOutPortMoniker name="//ETHERNET1/Out3" />
-          </source>
-        </rSIInPort>
-      </rSIInPorts>
-      <rSIParameters>
-        <rSIParameter name="Index" value="3" paramType="System.Int32" minVal="1" maxVal="20" isEnum="false" index="1" />
       </rSIParameters>
     </rSIElement>
     <rSIElement name="MONITOR1" objType="MONITOR" objTypeID="55" maxInputs="24" maxOutputs="0">
@@ -211,7 +175,7 @@
         <rSIOutPort name="C" />
       </rSIOutPorts>
       <rSIParameters>
-        <rSIParameter name="MaxTrans" value="200" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="1" />
+        <rSIParameter name="MaxTrans" value="300" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="1" />
         <rSIParameter name="MaxRotAngle" value="90" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="2" />
       </rSIParameters>
     </rSIElement>
