@@ -340,5 +340,37 @@
         <rSIOutPortShapeMoniker Id="ced932c9-9a18-49b7-b7ab-580e5571f5e7" />
       </nodes>
     </rSISignalConnector>
+    <rSIElementShape Id="91037a4f-76c3-4464-b1f4-0eba73c7e849" absoluteBounds="3, 5.625, 1.5, 2.4750000029802322" fillColor="BlanchedAlmond">
+      <rSIElementMoniker name="//POSCORRMON1" />
+      <relativeChildShapes>
+        <rSIOutPortShape Id="62ffedf8-3ef5-45a4-96fa-28f2f896369d" absoluteBounds="4.5, 5.875, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/X" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+        <rSIOutPortShape Id="de61c9e2-a103-42e3-a803-d348de706218" absoluteBounds="4.5, 6.275, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/Y" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+        <rSIOutPortShape Id="3040764c-a667-4620-895b-33303f20c044" absoluteBounds="4.5, 6.675, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/Z" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+        <rSIOutPortShape Id="ed590bb8-f9b3-487a-8a9c-26f08151f666" absoluteBounds="4.5, 7.075, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/A" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+        <rSIOutPortShape Id="9dd6112f-bde0-440f-9b35-9c0bbbd70b9f" absoluteBounds="4.5, 7.475, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/B" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+        <rSIOutPortShape Id="e8099b34-922f-42b9-b54b-f0291689ce83" absoluteBounds="4.5, 7.875, 0.40000000596046448, 0.075000002980232239" fillColor="White">
+          <rSIOutPortMoniker name="//POSCORRMON1/C" />
+          <relativeChildShapes />
+        </rSIOutPortShape>
+      </relativeChildShapes>
+      <nestedChildShapes>
+        <elementListCompartment Id="92ab377a-ae26-4853-8194-8eb161f2a993" absoluteBounds="3.015, 6.135, 1.4700000000000002, 0.63399251302083326" name="RSIParameters" titleTextColor="Black" itemTextColor="Black" />
+      </nestedChildShapes>
+    </rSIElementShape>
   </nestedChildShapes>
 </rSIObjectDiagram>

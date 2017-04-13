@@ -70,7 +70,7 @@
         <rSIParameter name="UpperLimX" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="4" />
         <rSIParameter name="UpperLimY" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
         <rSIParameter name="UpperLimZ" value="200" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
-        <rSIParameter name="MaxRotAngle" value="30" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="7" />
+        <rSIParameter name="MaxRotAngle" value="90" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="7" />
         <rSIParameter name="RefCorrSys" value="Base" paramType="KUKA.RSIVisual.RSI_TrafoCosys" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
       </rSIParameters>
     </rSIElement>
@@ -199,6 +199,20 @@
       <rSIParameters>
         <rSIParameter name="Index" value="3" paramType="System.Int32" minVal="1" maxVal="4096" isEnum="false" index="1" />
         <rSIParameter name="DataSize" value="Bit" paramType="KUKA.RSIVisual.RSI_DataSizeX" minVal="-2147483648" maxVal="2147483647" isEnum="true" index="2" />
+      </rSIParameters>
+    </rSIElement>
+    <rSIElement name="POSCORRMON1" objType="POSCORRMON" objTypeID="81" maxInputs="0" maxOutputs="0">
+      <rSIOutPorts>
+        <rSIOutPort name="X" />
+        <rSIOutPort name="Y" />
+        <rSIOutPort name="Z" />
+        <rSIOutPort name="A" />
+        <rSIOutPort name="B" />
+        <rSIOutPort name="C" />
+      </rSIOutPorts>
+      <rSIParameters>
+        <rSIParameter name="MaxTrans" value="200" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="1" />
+        <rSIParameter name="MaxRotAngle" value="90" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="2" />
       </rSIParameters>
     </rSIElement>
   </rSIObjects>
