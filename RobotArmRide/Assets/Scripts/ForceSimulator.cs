@@ -36,13 +36,15 @@ public class ForceSimulator : MonoBehaviour {
     public float ISverticalThreshold = 1;
     public float ISlimitMultiplier = 1;
     // IS Limits:
-    private float[] r_limits = { 0.3f, 0.5f, 1.7f, 1.9f };
-    private float[] theta_limits = { -130f, -110f, 110f, 130f };
-    private float[] phi_limits = { 5f, 15f, 125f, 135f };
+    private float[] r_limits = { 0.06f, 0.08f}; // defined in meters
+    //private float[] theta_limits = { -130f, -110f, 110f, 130f }; // defined in degrees
+    //private float[] phi_limits = { 5f, 15f, 125f, 135f }; // defined in degrees
     // position in spherical coordinates
     public float r;
-    public float theta;
-    public float phi;
+    //public float theta;
+    //public float phi;
+
+    private float[] heightLimits = { 0.0f, 0.1f }; // defined in meters
 
     private Rigidbody rb;
     private RobotArmControl RobotArm;
@@ -136,42 +138,40 @@ public class ForceSimulator : MonoBehaviour {
 	
 	void FixedUpdate () {
         if (enableHeightAdjust)
-            returnPosition.y = RobotArm.transform.position.y + Mathf.Lerp(r_limits[1]+0.3f, r_limits[2], (mc.transform.position.y + 5) / 40);
+            returnPosition.y = RobotArm.transform.position.y + Mathf.Lerp(heightLimits[0], heightLimits[1], (mc.transform.position.y + 0.78f) / 40);
 
         //*********************************//
         //*** Impulse Simulation Limits ***//
         //*********************************//
         r = (transform.position - RobotArm.transform.position).magnitude;
-        theta = Mathf.Atan2(transform.position.z - RobotArm.transform.position.z, transform.position.x - RobotArm.transform.position.x) * Mathf.Rad2Deg;
-        phi = Mathf.Acos((transform.position.y - RobotArm.transform.position.y) / r) * Mathf.Rad2Deg;
+        //theta = Mathf.Atan2(transform.position.z - RobotArm.transform.position.z, transform.position.x - RobotArm.transform.position.x) * Mathf.Rad2Deg;
+        //phi = Mathf.Acos((transform.position.y - RobotArm.transform.position.y) / r) * Mathf.Rad2Deg;
         ISlimitMultiplier = 1;
-        if (r > r_limits[0] && r < r_limits[3])
+        if ( r < r_limits[1]) // && r > r_limits[0]
         {
-            if (r < r_limits[1])
-                ISlimitMultiplier = Mathf.Min( Mathf.Lerp(0, 1, (r - r_limits[0]) / (r_limits[1] - r_limits[0])), ISlimitMultiplier);
-            else if (r > r_limits[2])
-                ISlimitMultiplier = Mathf.Min( Mathf.Lerp(1, 0, (r - r_limits[2]) / (r_limits[3] - r_limits[2])), ISlimitMultiplier);
+            if (r > r_limits[1])
+                ISlimitMultiplier = Mathf.Min( Mathf.Lerp(1, 0, (r - r_limits[0]) / (r_limits[1] - r_limits[0])), ISlimitMultiplier);
         }
         else
             ISlimitMultiplier = 0;
-        if (theta > theta_limits[0] && theta < theta_limits[3])
-        {
-            if (theta < theta_limits[1])
-                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (theta - theta_limits[0]) / (theta_limits[1] - theta_limits[0])), ISlimitMultiplier);
-            else if (theta > theta_limits[2])
-                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (theta - theta_limits[2]) / (theta_limits[3] - theta_limits[2])), ISlimitMultiplier);
-        }
-        else
-            ISlimitMultiplier = 0;
-        if (phi > phi_limits[0] && phi < phi_limits[3])
-        {
-            if (phi < phi_limits[1])
-                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (phi - phi_limits[0]) / (phi_limits[1] - phi_limits[0])), ISlimitMultiplier);
-            else if (phi > phi_limits[2])
-                ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (phi - phi_limits[2]) / (phi_limits[3] - phi_limits[2])), ISlimitMultiplier);
-        }
-        else
-            ISlimitMultiplier = 0;
+        //if (theta > theta_limits[0] && theta < theta_limits[3])
+        //{
+        //    if (theta < theta_limits[1])
+        //        ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (theta - theta_limits[0]) / (theta_limits[1] - theta_limits[0])), ISlimitMultiplier);
+        //    else if (theta > theta_limits[2])
+        //        ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (theta - theta_limits[2]) / (theta_limits[3] - theta_limits[2])), ISlimitMultiplier);
+        //}
+        //else
+        //    ISlimitMultiplier = 0;
+        //if (phi > phi_limits[0] && phi < phi_limits[3])
+        //{
+        //    if (phi < phi_limits[1])
+        //        ISlimitMultiplier = Mathf.Min(Mathf.Lerp(0, 1, (phi - phi_limits[0]) / (phi_limits[1] - phi_limits[0])), ISlimitMultiplier);
+        //    else if (phi > phi_limits[2])
+        //        ISlimitMultiplier = Mathf.Min(Mathf.Lerp(1, 0, (phi - phi_limits[2]) / (phi_limits[3] - phi_limits[2])), ISlimitMultiplier);
+        //}
+        //else
+        //    ISlimitMultiplier = 0;
 
         // Get the local accelerations:
         localAccel = mc.transform.InverseTransformDirection(mc.acceleration);
@@ -209,10 +209,16 @@ public class ForceSimulator : MonoBehaviour {
 
         if (Mathf.Abs(d_x) > ISverticalReturnSpeed / 2)
             returnStep.x = Mathf.Lerp(-Mathf.Sign(d_x), 0, 0.5f);
+        //else
+        //    returnStep.x = -d_x;
         if (Mathf.Abs(d_y) > ISverticalReturnSpeed / 2)
             returnStep.y = Mathf.Lerp(-Mathf.Sign(d_y), 0, 0.5f);
+        //else
+        //    returnStep.y = -d_y;
         if (Mathf.Abs(d_z) > ISverticalReturnSpeed / 2)
             returnStep.z = Mathf.Lerp(-Mathf.Sign(d_z), 0, 0.5f);
+        //else
+        //    returnStep.z = -d_z;
 
         // Update position and rotation
         transform.Translate(returnStep * ISverticalReturnSpeed);

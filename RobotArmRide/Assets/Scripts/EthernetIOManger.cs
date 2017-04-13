@@ -47,7 +47,6 @@ public class EthernetIOManger : MonoBehaviour
     private Vector3 pos_copy;
     private Vector3 rot_copy;
     private Vector3 rot_last = Vector3.zero;
-    private Vector3 pos_last = Vector3.zero;
 
     // Use this for initialization
     void Start()
@@ -186,8 +185,7 @@ public class EthernetIOManger : MonoBehaviour
                 //lock (fs.pos_rot_Lock)
                 //{
                     pos_copy = fs.current_position;
-                    pos_copy.y -= 0.89f;
-                    pos_copy *= 200;
+                    pos_copy *= 1000; // convert to millimeters
                     rot_copy = fs.current_rotation.eulerAngles;
                 //}
                 // Limit position and rotation updates
@@ -195,8 +193,8 @@ public class EthernetIOManger : MonoBehaviour
                 Vector3 newRotation;
                 if (false)
                 {
-                    newPosition = pos_copy;
-                    newRotation = rot_copy;
+                    //newPosition = pos_copy;
+                    //newRotation = rot_copy;
                     // TODO: implement this once inverse kinematics is done
                 }
                 else

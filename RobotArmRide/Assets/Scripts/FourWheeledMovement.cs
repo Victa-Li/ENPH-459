@@ -5,7 +5,6 @@ using UnityStandardAssets.Vehicles.Car;
 public class FourWheeledMovement : PlayerMover {
 
 	MovementController mc;
-	Rigidbody rb;
     
     private CarController m_Car; // the car controller we want to use
 
@@ -17,7 +16,6 @@ public class FourWheeledMovement : PlayerMover {
     // Use this for initialization
     void Start () {
 		mc = GetComponent<MovementController> ();
-		rb = GetComponent<Rigidbody> ();
 	}
 	
 	// Update is called once per frame
