@@ -16,12 +16,12 @@
   </RSIObject>
   <RSIObject ObjType="POSCORR" ObjTypeID="27" ObjID="POSCORR1">
     <Inputs>
-      <Input InIdx="1" OutObjID="PID1" OutIdx="1" />
-      <Input InIdx="2" OutObjID="PID2" OutIdx="1" />
-      <Input InIdx="3" OutObjID="PID3" OutIdx="1" />
-      <Input InIdx="4" OutObjID="PID4" OutIdx="1" />
-      <Input InIdx="5" OutObjID="PID5" OutIdx="1" />
-      <Input InIdx="6" OutObjID="PID6" OutIdx="1" />
+      <Input InIdx="1" OutObjID="IIRFILTER1" OutIdx="1" />
+      <Input InIdx="2" OutObjID="IIRFILTER2" OutIdx="1" />
+      <Input InIdx="3" OutObjID="IIRFILTER3" OutIdx="1" />
+      <Input InIdx="4" OutObjID="IIRFILTER4" OutIdx="1" />
+      <Input InIdx="5" OutObjID="IIRFILTER5" OutIdx="1" />
+      <Input InIdx="6" OutObjID="IIRFILTER6" OutIdx="1" />
     </Inputs>
     <Parameters>
       <Parameter Name="LowerLimX" ParamID="1" ParamValue="-300" />
@@ -79,82 +79,76 @@
       <Parameter Name="MaxRotAngle" ParamID="2" ParamValue="90" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID1">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER1">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="1" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID2">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER2">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="2" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID3">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER3">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="3" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID4">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER4">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="4" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID5">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER5">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="5" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
-  <RSIObject ObjType="PID" ObjTypeID="36" ObjID="PID6">
+  <RSIObject ObjType="IIRFILTER" ObjTypeID="60" ObjID="IIRFILTER6">
     <Inputs>
       <Input InIdx="1" OutObjID="ETHERNET1" OutIdx="6" />
     </Inputs>
     <Parameters>
       <Parameter Name="Reset" ParamID="1" ParamValue="False" />
-      <Parameter Name="KR" ParamID="2" ParamValue="1" />
-      <Parameter Name="TN" ParamID="3" ParamValue="1" />
-      <Parameter Name="TV" ParamID="4" ParamValue="0" />
-      <Parameter Name="LimLow" ParamID="5" ParamValue="0" />
-      <Parameter Name="LimUpp" ParamID="6" ParamValue="0" />
+      <Parameter Name="Type" ParamID="1" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Name" ParamID="2" ParamValue="1" IsRuntime="false" />
+      <Parameter Name="Order" ParamID="3" ParamValue="0" IsRuntime="false" />
+      <Parameter Name="Cutoff" ParamID="4" ParamValue="5" IsRuntime="false" />
     </Parameters>
   </RSIObject>
 </RSIObjects>

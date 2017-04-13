@@ -33,10 +33,10 @@ public class EthernetIOManger : MonoBehaviour
     private const float RSIStep = 0.004f; // in seconds
     private const float maxJerk = 10f; // mm / s^3
     private const float maxAccel = 10f; // mm / s^2
-    private const float maxVel = 3f; // mm / cycle
+    private const float maxVel = 250f; // mm / s
     private const float maxJerkAngle = 10f; // deg / s^3
     private const float maxAccelAngle = 10f; // deg / s^2
-    private const float maxVelAngle = 0.05f; // deg / cycle
+    private const float maxVelAngle = 40f; // deg / s
     //private float currentJerk;
     //private float currentAccel;
     //private float currentVel;
@@ -199,7 +199,7 @@ public class EthernetIOManger : MonoBehaviour
                 }
                 else
                 {
-                    newPosition = Vector3.MoveTowards(lastPosition, pos_copy, maxVel);
+                    newPosition = Vector3.MoveTowards(lastPosition, pos_copy, maxVel * RSIStep);
                     //if (!(Mathf.Approximately(newPosition.x, lastPosition.x) &&
                     //    Mathf.Approximately(newPosition.y, lastPosition.y) &&
                     //    Mathf.Approximately(newPosition.z, lastPosition.z)))
@@ -215,9 +215,9 @@ public class EthernetIOManger : MonoBehaviour
                         rot_copy.z -= 360 * Mathf.Sign(rot_copy.z - rot_last.z);
                     rot_last = rot_copy;
                     newRotation = Vector3.zero;
-                    newRotation.x = Mathf.MoveTowardsAngle(lastRotation.x, rot_copy.x, maxVelAngle);
-                    newRotation.y = Mathf.MoveTowardsAngle(lastRotation.y, rot_copy.y, maxVelAngle);
-                    newRotation.z = Mathf.MoveTowardsAngle(lastRotation.z, rot_copy.z, maxVelAngle);
+                    newRotation.x = Mathf.MoveTowardsAngle(lastRotation.x, rot_copy.x, maxVelAngle * RSIStep);
+                    newRotation.y = Mathf.MoveTowardsAngle(lastRotation.y, rot_copy.y, maxVelAngle * RSIStep);
+                    newRotation.z = Mathf.MoveTowardsAngle(lastRotation.z, rot_copy.z, maxVelAngle * RSIStep);
 
                     //if (!(Mathf.Approximately(newRotation.x, lastRotation.x) &&
                     //    Mathf.Approximately(newRotation.y, lastRotation.y) &&
@@ -225,6 +225,8 @@ public class EthernetIOManger : MonoBehaviour
                     //{
                     //    Debug.LogWarning("Limited rotation!");
                     //}
+                    //newPosition = pos_copy;
+                    //newRotation = rot_copy;
                     lastPosition = newPosition;
                     lastRotation = newRotation;
                 }

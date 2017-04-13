@@ -25,32 +25,32 @@
       <rSIInPorts>
         <rSIInPort name="CorrX" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID1/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER1/Out1" />
           </source>
         </rSIInPort>
         <rSIInPort name="CorrY" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID2/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER2/Out1" />
           </source>
         </rSIInPort>
         <rSIInPort name="CorrZ" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID3/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER3/Out1" />
           </source>
         </rSIInPort>
         <rSIInPort name="CorrA" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID4/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER4/Out1" />
           </source>
         </rSIInPort>
         <rSIInPort name="CorrB" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID5/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER5/Out1" />
           </source>
         </rSIInPort>
         <rSIInPort name="CorrC" mandatory="false">
           <source>
-            <rSIOutPortMoniker name="//PID6/Out1" />
+            <rSIOutPortMoniker name="//IIRFILTER6/Out1" />
           </source>
         </rSIInPort>
       </rSIInPorts>
@@ -179,7 +179,7 @@
         <rSIParameter name="MaxRotAngle" value="90" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="2" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID1" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER1" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -192,14 +192,13 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID2" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER2" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -212,14 +211,13 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID3" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER3" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -232,14 +230,13 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID4" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER4" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -252,14 +249,13 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID5" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER5" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -272,14 +268,13 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
-    <rSIElement name="PID6" objType="PID" objTypeID="36" maxInputs="0" maxOutputs="0">
+    <rSIElement name="IIRFILTER6" objType="IIRFILTER" objTypeID="60" maxInputs="0" maxOutputs="0">
       <rSIInPorts>
         <rSIInPort name="In1">
           <source>
@@ -292,11 +287,10 @@
       </rSIOutPorts>
       <rSIParameters>
         <rSIParameter name="Reset" value="False" paramType="System.Boolean" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="1" />
-        <rSIParameter name="KR" value="1" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="2" />
-        <rSIParameter name="TN" value="1" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="3" />
-        <rSIParameter name="TV" value="0" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" index="4" />
-        <rSIParameter name="LimLow" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="5" />
-        <rSIParameter name="LimUpp" value="0" paramType="System.Double" minVal="-2147483648" maxVal="2147483647" isEnum="false" index="6" />
+        <rSIParameter name="Type" value="Lowpass" paramType="KUKA.RSIVisual.RSI_FilterType" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="1" />
+        <rSIParameter name="Name" value="Butterworth" paramType="KUKA.RSIVisual.RSI_FilterName" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="2" />
+        <rSIParameter name="Order" value="O2" paramType="KUKA.RSIVisual.RSI_FilterOrder" minVal="-2147483648" maxVal="2147483647" isEnum="true" isRuntime="false" index="3" />
+        <rSIParameter name="Cutoff" value="5" paramType="System.Double" minVal="0" maxVal="2147483647" isEnum="false" isRuntime="false" index="4" />
       </rSIParameters>
     </rSIElement>
   </rSIObjects>
