@@ -25,7 +25,8 @@ public class FeedBackSimulateOnCube : MonoBehaviour
     void Update()
     {
         position = new Vector3(x, y, z);
+        position /= 1000;
         transform.localPosition = position;
-        transform.localRotation = Quaternion.AngleAxis(-angleC, axisy) * Quaternion.AngleAxis(-angleB, axisz) * Quaternion.AngleAxis(-angleA, axisx);
+        transform.localRotation = Quaternion.AngleAxis(-angleA, axisy) * Quaternion.AngleAxis(-angleB, axisz) * Quaternion.AngleAxis(-angleC, axisx);
     }
 }
