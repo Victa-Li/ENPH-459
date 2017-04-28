@@ -4,12 +4,10 @@ using System.Collections;
 public class FourWheeledMovement : PlayerMover {
 
 	MovementController mc;
-	Rigidbody rb;
 
 	// Use this for initialization
 	void Start () {
 		mc = GetComponent<MovementController> ();
-		rb = GetComponent<Rigidbody> ();
 	}
 	
 	// Update is called once per frame
