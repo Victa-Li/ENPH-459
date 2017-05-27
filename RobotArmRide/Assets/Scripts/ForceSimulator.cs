@@ -200,8 +200,9 @@ public class ForceSimulator : MonoBehaviour {
         //*** Impulse simulation up-down ***//
         //**********************************//
         if (Mathf.Abs(localAccel.y) > ISverticalThreshold)
-            rb.AddForce(target_helper.transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
-        
+            // rb.AddForce(target_helper.transform.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
+            rb.AddForce(Vector3.up * localAccel.y * ISverticalMultiplier * ISlimitMultiplier, ForceMode.Acceleration);
+
         Vector3 returnStep = Vector3.zero;
         float d_x = transform.position.x - returnPosition.x;
         float d_y = transform.position.y - returnPosition.y;
@@ -242,6 +243,8 @@ public class ForceSimulator : MonoBehaviour {
             current_position = transform.localPosition;
             current_rotation = transform.localRotation;
         //}
+
+        rb.transform.localPosition = new Vector3(0f,rb.transform.localPosition.y, 0f);
     }
 }
 
